@@ -22,9 +22,25 @@ const Dashboard = () => {
       {/* Header */}
       <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50">
         <nav className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Shield className="w-8 h-8 text-primary" />
-            <span className="text-2xl font-bold font-mono text-primary">EchoBreaker</span>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
+              <Shield className="w-8 h-8 text-primary" />
+              <span className="text-2xl font-bold font-mono text-primary">EchoBreaker</span>
+            </div>
+            <div className="flex gap-4">
+              <Button variant="default" className="font-mono">
+                Dashboard
+              </Button>
+              <Button variant="ghost" onClick={() => navigate('/analytics')} className="font-mono">
+                Analytics
+              </Button>
+              <Button variant="ghost" onClick={() => navigate('/agents')} className="font-mono">
+                Agents
+              </Button>
+              <Button variant="ghost" onClick={() => navigate('/network')} className="font-mono">
+                Network
+              </Button>
+            </div>
           </div>
           <Button 
             variant="outline" 
