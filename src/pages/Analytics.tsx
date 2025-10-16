@@ -1,7 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Shield, LogOut, TrendingUp, Globe, Download } from "lucide-react";
+import { Logo } from "@/components/Logo";
+import { LogOut, TrendingUp, Globe, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Analytics = () => {
@@ -34,7 +35,7 @@ const Analytics = () => {
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
-              <Shield className="w-8 h-8 text-primary" />
+              <Logo />
               <span className="text-2xl font-bold font-mono text-primary">EchoBreaker</span>
             </div>
             <div className="flex gap-4">
@@ -49,6 +50,12 @@ const Analytics = () => {
               </Button>
               <Button variant="ghost" onClick={() => navigate('/network')} className="font-mono">
                 Network
+              </Button>
+              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono">
+                Incidents
+              </Button>
+              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono">
+                Alerts
               </Button>
             </div>
           </div>
