@@ -1,7 +1,7 @@
 import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Video, Image, FileText, TrendingUp } from "lucide-react";
-import { Progress } from "./ui/progress";
+import { AnimatedProgress } from "./AnimatedProgress";
 
 const detections = [
   {
@@ -97,7 +97,7 @@ export const MonitoringDashboard = () => {
             return (
               <div
                 key={detection.id}
-                className="p-4 rounded-lg bg-background/50 border border-border hover:border-primary/50 transition-all group animate-fade-in-up"
+                className="p-4 rounded-lg bg-background/50 border border-border hover:border-primary/50 transition-all group animate-fade-in-up card-interactive cursor-pointer"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="flex items-start gap-4">
@@ -120,16 +120,13 @@ export const MonitoringDashboard = () => {
                       </Badge>
                     </div>
                     
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-muted-foreground font-mono">Confidence</span>
-                        <span className={`font-bold text-${statusColor}`}>
-                          {detection.confidence}%
-                        </span>
-                      </div>
-                      <Progress 
+                    <div className="mt-3">
+                      <AnimatedProgress 
                         value={detection.confidence} 
-                        className="h-1.5"
+                        variant={
+                          detection.confidence >= 90 ? "danger" :
+                          detection.confidence >= 80 ? "warning" : "default"
+                        }
                       />
                     </div>
                   </div>

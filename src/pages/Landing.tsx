@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Logo } from "@/components/Logo";
+import { DemoBanner } from "@/components/DemoBanner";
 import { Network, AlertTriangle, Brain, ArrowRight, Scan, Eye, Shield, Zap, Users, Globe } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,6 +10,7 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <DemoBanner />
       {/* Ambient Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-glow" />
@@ -16,7 +18,7 @@ const Landing = () => {
       </div>
 
       {/* Header */}
-      <header className="relative z-10 container mx-auto px-4 py-6">
+      <header className="relative z-10 container mx-auto px-4 py-6 mt-12">
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Logo />
@@ -25,7 +27,7 @@ const Landing = () => {
           <Button 
             variant="outline" 
             onClick={() => navigate('/auth')}
-            className="font-mono"
+            className="font-mono hover-lift"
           >
             Sign In
           </Button>
@@ -73,7 +75,7 @@ const Landing = () => {
             <Button 
               size="lg" 
               onClick={() => navigate('/auth')}
-              className="font-mono text-lg group"
+              className="font-mono text-lg group hover-lift"
             >
               Get Started
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -82,7 +84,7 @@ const Landing = () => {
               size="lg" 
               variant="outline"
               onClick={() => navigate('/dashboard')}
-              className="font-mono text-lg"
+              className="font-mono text-lg hover-lift"
             >
               View Live Dashboard
             </Button>
@@ -142,7 +144,7 @@ const Landing = () => {
             ].map((agent, idx) => (
               <Card
                 key={agent.title}
-                className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up hover:border-primary/40 transition-all"
+                className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up hover:border-primary/40 transition-all card-interactive"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
                 <div className={`w-12 h-12 bg-${agent.color}/10 border border-${agent.color}/30 rounded-lg flex items-center justify-center mb-4`}>
@@ -191,7 +193,7 @@ const Landing = () => {
             ].map((useCase, idx) => (
               <Card
                 key={useCase.title}
-                className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up"
+                className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up card-interactive"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
                 <div className="flex items-start gap-4">
@@ -210,7 +212,7 @@ const Landing = () => {
 
         {/* Call to Action */}
         <div className="max-w-4xl mx-auto text-center py-20">
-          <Card className="p-12 bg-card/50 backdrop-blur-sm border-primary/20">
+          <Card className="p-12 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary">
               Early Detection. Evidence-Backed Reports. Autonomous Action.
             </h2>
@@ -221,7 +223,7 @@ const Landing = () => {
               <Button 
                 size="lg" 
                 onClick={() => navigate('/dashboard')}
-                className="font-mono text-lg group"
+                className="font-mono text-lg group hover-lift"
               >
                 View Live Demo
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -230,7 +232,7 @@ const Landing = () => {
                 size="lg" 
                 variant="outline"
                 onClick={() => navigate('/auth')}
-                className="font-mono text-lg"
+                className="font-mono text-lg hover-lift"
               >
                 Request Access
               </Button>

@@ -2,11 +2,23 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
+import { DemoBanner } from "@/components/DemoBanner";
+import { LastUpdated } from "@/components/LastUpdated";
+import { InteractiveNetworkGraph } from "@/components/InteractiveNetworkGraph";
 import { LogOut, Network as NetworkIcon, Users, Share2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "@/hooks/use-notification";
 
 const Network = () => {
   const navigate = useNavigate();
+  const { showSuccess, showInfo } = useNotification();
+
+  const handleExportNetwork = (clusterId: number, clusterName: string) => {
+    showInfo("Export Started", `Exporting network graph for ${clusterName}...`);
+    setTimeout(() => {
+      showSuccess("Export Complete", "Network topology data exported successfully.");
+    }, 1500);
+  };
 
   const clusters = [
     {
@@ -45,12 +57,13 @@ const Network = () => {
 
   return (
     <div className="min-h-screen relative">
+      <DemoBanner />
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-glow" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }} />
       </div>
 
-      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50">
+      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50 mt-12">
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
@@ -58,22 +71,22 @@ const Network = () => {
               <span className="text-2xl font-bold font-mono text-primary">EchoBreaker</span>
             </div>
             <div className="flex gap-4">
-              <Button variant="ghost" onClick={() => navigate('/dashboard')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/dashboard')} className="font-mono hover-lift">
                 Dashboard
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/analytics')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/analytics')} className="font-mono hover-lift">
                 Analytics
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/agents')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/agents')} className="font-mono hover-lift">
                 Agents
               </Button>
-              <Button variant="default" className="font-mono">
+              <Button variant="default" className="font-mono hover-glow">
                 Network
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono hover-lift">
                 Incidents
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono hover-lift">
                 Alerts
               </Button>
             </div>
@@ -87,14 +100,19 @@ const Network = () => {
 
       <div className="relative z-10 container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 font-mono text-primary">
-            Network Analysis
-          </h1>
-          <p className="text-muted-foreground">Coordinated influence operations and bot networks</p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-4xl font-bold mb-2 font-mono text-primary">
+                Network Analysis
+              </h1>
+              <p className="text-muted-foreground">Coordinated influence operations and bot networks</p>
+            </div>
+            <LastUpdated />
+          </div>
         </div>
 
         {/* Large Network Graph */}
-        <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 mb-6">
+        <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 mb-6 card-interactive">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <NetworkIcon className="w-5 h-5 text-primary" />
@@ -103,51 +121,11 @@ const Network = () => {
               </h2>
             </div>
             <Badge variant="outline" className="font-mono">
-              658 Networks Detected
+              23 Nodes • 31 Connections
             </Badge>
           </div>
 
-          <div className="h-[500px] bg-background/30 rounded-lg border border-border flex items-center justify-center relative overflow-hidden">
-            {/* Enhanced network visualization */}
-            <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
-              {/* Central cluster */}
-              <circle cx="400" cy="250" r="60" fill="hsl(0 85% 60% / 0.2)" stroke="hsl(0 85% 60%)" strokeWidth="2" className="animate-pulse" />
-              <circle cx="400" cy="250" r="12" fill="hsl(0 85% 60%)" />
-              
-              {/* Satellite nodes */}
-              {[...Array(12)].map((_, i) => {
-                const angle = (i * 30) * (Math.PI / 180);
-                const radius = 120 + Math.random() * 80;
-                const x = 400 + Math.cos(angle) * radius;
-                const y = 250 + Math.sin(angle) * radius;
-                const size = 6 + Math.random() * 6;
-                
-                return (
-                  <g key={i}>
-                    <line
-                      x1="400"
-                      y1="250"
-                      x2={x}
-                      y2={y}
-                      stroke="hsl(180 100% 50% / 0.3)"
-                      strokeWidth="1"
-                      className="animate-pulse"
-                    />
-                    <circle
-                      cx={x}
-                      cy={y}
-                      r={size}
-                      fill={i % 3 === 0 ? "hsl(0 85% 60%)" : i % 3 === 1 ? "hsl(30 100% 55%)" : "hsl(145 80% 50%)"}
-                      className="animate-pulse-glow cursor-pointer"
-                      style={{ animationDelay: `${i * 0.15}s` }}
-                    />
-                  </g>
-                );
-              })}
-            </svg>
-            
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 animate-pulse pointer-events-none" />
-          </div>
+          <InteractiveNetworkGraph />
         </Card>
 
         {/* Cluster Details */}
@@ -155,7 +133,7 @@ const Network = () => {
           {clusters.map((cluster, idx) => (
             <Card
               key={cluster.id}
-              className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up"
+              className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up card-interactive"
               style={{ animationDelay: `${idx * 100}ms` }}
             >
               <div className="flex items-start justify-between mb-4">
@@ -205,9 +183,13 @@ const Network = () => {
                 </div>
               </div>
 
-              <Button variant="outline" className="w-full mt-4 font-mono">
+              <Button 
+                variant="outline" 
+                className="w-full mt-4 font-mono hover-lift"
+                onClick={() => handleExportNetwork(cluster.id, cluster.name)}
+              >
                 <Share2 className="w-4 h-4 mr-2" />
-                View Details
+                Export Network
               </Button>
             </Card>
           ))}

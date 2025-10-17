@@ -2,11 +2,22 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
+import { DemoBanner } from "@/components/DemoBanner";
+import { LastUpdated } from "@/components/LastUpdated";
 import { LogOut, TrendingUp, Globe, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "@/hooks/use-notification";
 
 const Analytics = () => {
   const navigate = useNavigate();
+  const { showSuccess, showInfo } = useNotification();
+
+  const handleExportReport = () => {
+    showInfo("Export Started", "Generating analytics report...");
+    setTimeout(() => {
+      showSuccess("Export Complete", "Analytics report has been downloaded successfully.");
+    }, 1500);
+  };
 
   const regions = [
     { name: "North America", threats: 1247, change: "+12%" },
@@ -26,12 +37,13 @@ const Analytics = () => {
 
   return (
     <div className="min-h-screen relative">
+      <DemoBanner />
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-glow" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }} />
       </div>
 
-      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50">
+      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50 mt-12">
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
@@ -39,22 +51,22 @@ const Analytics = () => {
               <span className="text-2xl font-bold font-mono text-primary">EchoBreaker</span>
             </div>
             <div className="flex gap-4">
-              <Button variant="ghost" onClick={() => navigate('/dashboard')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/dashboard')} className="font-mono hover-lift">
                 Dashboard
               </Button>
-              <Button variant="default" className="font-mono">
+              <Button variant="default" className="font-mono hover-glow">
                 Analytics
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/agents')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/agents')} className="font-mono hover-lift">
                 Agents
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/network')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/network')} className="font-mono hover-lift">
                 Network
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono hover-lift">
                 Incidents
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono hover-lift">
                 Alerts
               </Button>
             </div>
@@ -74,14 +86,17 @@ const Analytics = () => {
             </h1>
             <p className="text-muted-foreground">Misinformation trends and geographic distribution</p>
           </div>
-          <Button className="font-mono">
-            <Download className="w-4 h-4 mr-2" />
-            Export Report
-          </Button>
+          <div className="flex items-center gap-4">
+            <LastUpdated />
+            <Button className="font-mono hover-lift" onClick={handleExportReport}>
+              <Download className="w-4 h-4 mr-2" />
+              Export Report
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20">
+          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
             <div className="flex items-center gap-2 mb-4">
               <Globe className="w-5 h-5 text-primary" />
               <h2 className="text-xl font-bold text-primary font-mono">
@@ -114,7 +129,7 @@ const Analytics = () => {
             </div>
           </Card>
 
-          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20">
+          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5 text-primary" />
               <h2 className="text-xl font-bold text-primary font-mono">
@@ -162,7 +177,7 @@ const Analytics = () => {
         </div>
 
         {/* Heatmap placeholder */}
-        <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20">
+        <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
           <h2 className="text-xl font-bold text-primary font-mono mb-4">
             Global Misinformation Heatmap
           </h2>

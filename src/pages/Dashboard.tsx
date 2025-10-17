@@ -4,6 +4,9 @@ import { NetworkGraph } from "@/components/NetworkGraph";
 import { ThreatFeed } from "@/components/ThreatFeed";
 import { PlatformStatus } from "@/components/PlatformStatus";
 import { StatsOverview } from "@/components/StatsOverview";
+import { DemoBanner } from "@/components/DemoBanner";
+import { LastUpdated } from "@/components/LastUpdated";
+import { LiveDetectionFeed } from "@/components/LiveDetectionFeed";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { LogOut } from "lucide-react";
@@ -14,6 +17,8 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen relative">
+      <DemoBanner />
+      
       {/* Ambient Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-glow" />
@@ -21,42 +26,45 @@ const Dashboard = () => {
       </div>
 
       {/* Header */}
-      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50">
+      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50 mt-12">
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
+            <div className="flex items-center gap-2 cursor-pointer hover-lift" onClick={() => navigate('/dashboard')}>
               <Logo />
               <span className="text-2xl font-bold font-mono text-primary">EchoBreaker</span>
             </div>
             <div className="flex gap-4">
-              <Button variant="default" className="font-mono">
+              <Button variant="default" className="font-mono hover-lift">
                 Dashboard
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/analytics')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/analytics')} className="font-mono hover-glow">
                 Analytics
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/agents')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/agents')} className="font-mono hover-glow">
                 Agents
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/network')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/network')} className="font-mono hover-glow">
                 Network
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono hover-glow">
                 Incidents
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono hover-glow">
                 Alerts
               </Button>
             </div>
           </div>
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/')}
-            className="font-mono"
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
-          </Button>
+          <div className="flex items-center gap-4">
+            <LastUpdated />
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/')}
+              className="font-mono hover-lift"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </Button>
+          </div>
         </nav>
       </header>
 
@@ -64,6 +72,8 @@ const Dashboard = () => {
         <HeroSection />
         <StatsOverview />
         <div className="container mx-auto px-4 py-12 space-y-8">
+          <LiveDetectionFeed />
+          
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <MonitoringDashboard />
