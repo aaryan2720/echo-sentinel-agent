@@ -4,15 +4,38 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { DemoBanner } from "@/components/DemoBanner";
 import { LastUpdated } from "@/components/LastUpdated";
-import { LogOut, Brain, Activity, CheckCircle, AlertCircle } from "lucide-react";
+import { LogOut, Brain, Activity, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "@/hooks/use-notification";
+import { getAgents } from "@/lib/supabase";
+import { useState, useEffect } from "react";
 
 const Agents = () => {
   const navigate = useNavigate();
   const { showSuccess, showInfo, showWarning } = useNotification();
+  const [agents, setAgents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleRestartAgent = (agentId: number, agentName: string) => {
+  useEffect(() => {
+    loadAgents();
+  }, []);
+
+  const loadAgents = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getAgents();
+      setAgents(data);
+    } catch (err: any) {
+      console.error('Error loading agents:', err);
+      setError(err.message || 'Failed to load agents');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRestartAgent = (agentId: string, agentName: string) => {
     showWarning("Restarting Agent", `${agentName} is being restarted...`);
     setTimeout(() => {
       showSuccess("Agent Online", `${agentName} has been restarted successfully.`);
@@ -23,58 +46,13 @@ const Agents = () => {
     showInfo("Loading Logs", `Fetching execution logs for ${agentName}...`);
   };
 
-  const agents = [
-    {
-      id: 1,
-      name: "Content Scanner Agent",
-      type: "Vision Transformer",
-      status: "active",
-      tasksCompleted: 1247,
-      currentTask: "Scanning trending videos on X",
-      accuracy: 94,
-      uptime: "99.8%",
-    },
-    {
-      id: 2,
-      name: "Audio Analysis Agent",
-      type: "Audio Transformer",
-      status: "active",
-      tasksCompleted: 892,
-      currentTask: "Analyzing voice patterns",
-      accuracy: 91,
-      uptime: "98.5%",
-    },
-    {
-      id: 3,
-      name: "Network Mapper Agent",
-      type: "Graph Neural Network",
-      status: "active",
-      tasksCompleted: 2341,
-      currentTask: "Mapping coordinated networks",
-      accuracy: 96,
-      uptime: "99.9%",
-    },
-    {
-      id: 4,
-      name: "Pattern Recognition Agent",
-      type: "LangChain Reasoning",
-      status: "processing",
-      tasksCompleted: 1567,
-      currentTask: "Identifying propaganda patterns",
-      accuracy: 89,
-      uptime: "97.2%",
-    },
-    {
-      id: 5,
-      name: "Platform Monitor Agent",
-      type: "Multi-Platform Crawler",
-      status: "active",
-      tasksCompleted: 3421,
-      currentTask: "Monitoring Telegram channels",
-      accuracy: 92,
-      uptime: "99.1%",
-    },
-  ];
+  // Calculate stats from loaded agents
+  const activeAgents = agents.filter(a => a.status === 'idle' || a.status === 'processing').length;
+  const processingAgents = agents.filter(a => a.status === 'processing').length;
+  const totalTasks = agents.reduce((sum, a) => sum + (a.tasks_completed || 0), 0);
+  const avgAccuracy = agents.length > 0
+    ? (agents.reduce((sum, a) => sum + (a.metadata?.accuracy || 0), 0) / agents.length).toFixed(1)
+    : '0.0';
 
   return (
     <div className="min-h-screen relative">
@@ -139,7 +117,7 @@ const Agents = () => {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground font-mono">Active Agents</p>
-                <p className="text-2xl font-bold text-foreground">4</p>
+                <p className="text-2xl font-bold text-foreground">{activeAgents}</p>
               </div>
             </div>
           </Card>
@@ -151,7 +129,7 @@ const Agents = () => {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground font-mono">Processing</p>
-                <p className="text-2xl font-bold text-foreground">1</p>
+                <p className="text-2xl font-bold text-foreground">{processingAgents}</p>
               </div>
             </div>
           </Card>
@@ -162,8 +140,8 @@ const Agents = () => {
                 <Brain className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground font-mono">Tasks Today</p>
-                <p className="text-2xl font-bold text-foreground">9.4K</p>
+                <p className="text-sm text-muted-foreground font-mono">Tasks Completed</p>
+                <p className="text-2xl font-bold text-foreground">{totalTasks.toLocaleString()}</p>
               </div>
             </div>
           </Card>
@@ -175,17 +153,42 @@ const Agents = () => {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground font-mono">Avg Accuracy</p>
-                <p className="text-2xl font-bold text-foreground">92.4%</p>
+                <p className="text-2xl font-bold text-foreground">{avgAccuracy}%</p>
               </div>
             </div>
           </Card>
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center space-y-4">
+              <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto" />
+              <p className="text-muted-foreground font-mono">Loading agents from database...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <Card className="p-8 bg-destructive/10 border-destructive/50">
+            <div className="text-center space-y-4">
+              <AlertCircle className="w-12 h-12 text-destructive mx-auto" />
+              <h3 className="text-xl font-bold text-destructive">Failed to Load Agents</h3>
+              <p className="text-muted-foreground">{error}</p>
+              <Button onClick={loadAgents} variant="outline">
+                Try Again
+              </Button>
+            </div>
+          </Card>
+        )}
+
         {/* Agents List */}
+        {!loading && !error && (
         <div className="space-y-4">
           {agents.map((agent, idx) => (
             <Card
-              key={agent.id}
+              key={agent.agent_id}
               className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up card-interactive"
               style={{ animationDelay: `${idx * 100}ms` }}
             >
@@ -196,13 +199,13 @@ const Agents = () => {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-foreground mb-1">{agent.name}</h3>
-                    <p className="text-sm text-muted-foreground font-mono">{agent.type}</p>
+                    <p className="text-sm text-muted-foreground font-mono">{agent.agent_type}</p>
                   </div>
                 </div>
                 
                 <Badge
-                  variant={agent.status === "active" ? "default" : "outline"}
-                  className={`font-mono ${agent.status === "active" ? "bg-success" : "animate-pulse"}`}
+                  variant={agent.status === "idle" ? "default" : "outline"}
+                  className={`font-mono ${agent.status === "idle" ? "bg-success" : agent.status === "processing" ? "animate-pulse bg-warning" : ""}`}
                 >
                   {agent.status}
                 </Badge>
@@ -211,19 +214,19 @@ const Agents = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div className="p-3 bg-background/50 rounded-lg">
                   <p className="text-xs text-muted-foreground font-mono mb-1">Tasks Completed</p>
-                  <p className="text-lg font-bold text-foreground">{agent.tasksCompleted}</p>
+                  <p className="text-lg font-bold text-foreground">{agent.tasks_completed || 0}</p>
                 </div>
                 <div className="p-3 bg-background/50 rounded-lg">
                   <p className="text-xs text-muted-foreground font-mono mb-1">Accuracy</p>
-                  <p className="text-lg font-bold text-primary">{agent.accuracy}%</p>
+                  <p className="text-lg font-bold text-primary">{agent.metadata?.accuracy || 0}%</p>
                 </div>
                 <div className="p-3 bg-background/50 rounded-lg">
                   <p className="text-xs text-muted-foreground font-mono mb-1">Uptime</p>
-                  <p className="text-lg font-bold text-success">{agent.uptime}</p>
+                  <p className="text-lg font-bold text-success">{agent.metadata?.uptime || '0%'}</p>
                 </div>
                 <div className="p-3 bg-background/50 rounded-lg col-span-2 md:col-span-1">
                   <p className="text-xs text-muted-foreground font-mono mb-1">Current Task</p>
-                  <p className="text-sm font-semibold text-foreground">{agent.currentTask}</p>
+                  <p className="text-sm font-semibold text-foreground">{agent.current_task || 'Idle'}</p>
                 </div>
               </div>
 
@@ -232,7 +235,7 @@ const Agents = () => {
                   variant="outline"
                   size="sm"
                   className="font-mono hover-lift"
-                  onClick={() => handleViewLogs(agent.id, agent.name)}
+                  onClick={() => handleViewLogs(agent.agent_id, agent.name)}
                 >
                   View Logs
                 </Button>
@@ -240,7 +243,7 @@ const Agents = () => {
                   variant="outline"
                   size="sm"
                   className="font-mono hover-lift"
-                  onClick={() => handleRestartAgent(agent.id, agent.name)}
+                  onClick={() => handleRestartAgent(agent.agent_id, agent.name)}
                 >
                   Restart
                 </Button>
@@ -258,6 +261,7 @@ const Agents = () => {
             </Card>
           ))}
         </div>
+        )}
       </div>
     </div>
   );
