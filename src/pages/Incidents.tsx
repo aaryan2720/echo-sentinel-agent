@@ -464,5 +464,4 @@ const Incidents = () => {
     </div>
   );
 };
-
 export default Incidents;
