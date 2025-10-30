@@ -13,11 +13,14 @@ export { AgentHub, agentHub, type AgentInfo, type AgentMessage, type MessageHand
 // Test agent
 export { TestAgent, testAgentExample } from './TestAgent';
 
+// Visual analysis agent
+export { VisualAnalysisAgent, testVisualAgent } from './VisualAnalysisAgent';
+
 // Configuration
 export { agentConfig, type AgentConfig as AgentSystemConfig } from './config';
 
 // Future agent exports will go here:
-// export { VisualAnalysisAgent } from './VisualAnalysisAgent';
+// export { AudioAnalysisAgent } from './AudioAnalysisAgent';
 // export { AudioAnalysisAgent } from './AudioAnalysisAgent';
 // export { NetworkAnalysisAgent } from './NetworkAnalysisAgent';
 // export { ContentIngestionAgent } from './ContentIngestionAgent';

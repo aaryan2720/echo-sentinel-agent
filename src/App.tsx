@@ -15,6 +15,8 @@ import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import DatabaseTest from "./pages/DatabaseTest";
 import AgentTest from "./pages/AgentTest";
+import VisualAgentTest from "./pages/VisualAgentTest";
+import URLAnalysisPage from "./pages/URLAnalysisPage";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +38,8 @@ const App = () => (
           <Route path="/settings" element={<Settings />} />
           <Route path="/db-test" element={<DatabaseTest />} />
           <Route path="/agent-test" element={<AgentTest />} />
+          <Route path="/visual-test" element={<VisualAgentTest />} />
+          <Route path="/url-analysis" element={<URLAnalysisPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
