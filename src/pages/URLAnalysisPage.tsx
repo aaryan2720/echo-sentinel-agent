@@ -40,11 +40,12 @@ export default function URLAnalysisPage() {
 
   // Sample URLs for testing
   const sampleUrls = {
+    youtube_short: 'https://www.youtube.com/shorts/hxeEq4yqhNc',
+    youtube_video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     twitter: 'https://twitter.com/user/status/1234567890',
     instagram: 'https://instagram.com/p/ABC123/',
     tiktok: 'https://www.tiktok.com/@user/video/1234567890',
-    youtube: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    direct: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    direct_mp4: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
   };
 
   const addLog = (message: string) => {
@@ -80,11 +81,14 @@ export default function URLAnalysisPage() {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       
-      // Check if it's a social media URL that needs extraction
-      if (errorMessage.includes('webpage (HTML)') || errorMessage.includes('Social media URLs need video extraction')) {
-        addLog(`⚠️ Social Media URL Detected: This URL requires video extraction service`);
-        addLog(`💡 Tip: Try downloading the video file and uploading directly, or use a direct video URL`);
-        addLog(`🔧 Supported: Direct .mp4, .mov, .avi links work best`);
+      // Check if it's an extraction failure
+      if (errorMessage.includes('Failed to extract video') || errorMessage.includes('private, deleted')) {
+        addLog(`⚠️ Video Extraction Failed: ${errorMessage}`);
+        addLog(`💡 Possible causes: Private video, deleted content, geo-blocked, or age-restricted`);
+        addLog(`� Try: Different URL, public videos, or direct video file upload`);
+      } else if (errorMessage.includes('Video too long')) {
+        addLog(`⏱️ Video Duration Limit: ${errorMessage}`);
+        addLog(`� Tip: Videos longer than 5 minutes are not supported for performance reasons`);
       } else {
         addLog(`❌ Analysis failed: ${errorMessage}`);
       }
@@ -179,10 +183,10 @@ export default function URLAnalysisPage() {
         </Alert>
         
         <Alert>
-          <AlertCircle className="h-4 w-4" />
+          <CheckCircle2 className="h-4 w-4" />
           <AlertDescription>
-            <strong>Currently Working:</strong> Direct video URLs (.mp4, .mov, .avi)<br/>
-            <strong>Social Media:</strong> Platform detection only (extraction service needed)
+            <strong>✅ Fully Working:</strong> All social media platforms + direct video URLs<br/>
+            <strong>🚀 Powered by:</strong> yt-dlp video extraction technology
           </AlertDescription>
         </Alert>
       </div>

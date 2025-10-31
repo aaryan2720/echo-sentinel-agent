@@ -176,8 +176,8 @@ class VideoAnalyzer:
     
     async def _analyze_video_with_videomae(self, video_path: str, start_time: float) -> Dict[str, Any]:
         """Analyze video using VideoMAE model"""
-        # Extract frames
-        frames = self.extract_frames(video_path, num_frames=16)
+        # Extract correct number of frames for this model (32 frames as per config)
+        frames = self.extract_frames(video_path, num_frames=32)
         frame_count = len(frames)
         
         # Convert numpy arrays to PIL Images
@@ -196,12 +196,26 @@ class VideoAnalyzer:
             outputs = self.model(**inputs)
             logits = outputs.logits
         
-        # Get predictions
-        predicted_class_idx = logits.argmax(-1).item()
+        # Get predictions with better confidence handling
         probabilities = torch.nn.functional.softmax(logits, dim=-1)[0]
-        confidence = probabilities[predicted_class_idx].item()
+        fake_prob = probabilities[0].item()  # deepfake probability
+        real_prob = probabilities[1].item()  # real probability
         
-        verdict = "FAKE" if predicted_class_idx == 0 else "REAL"
+        # Use confidence thresholds to avoid false positives
+        confidence_threshold = 0.75  # Higher threshold for more conservative predictions
+        
+        if fake_prob > confidence_threshold:
+            verdict = "FAKE"
+            confidence = fake_prob
+        elif real_prob > confidence_threshold:
+            verdict = "REAL" 
+            confidence = real_prob
+        else:
+            # If neither class has high confidence, default to REAL (conservative approach)
+            verdict = "REAL"
+            confidence = real_prob
+            logger.info(f"⚠️ Low confidence prediction - defaulting to REAL (fake: {fake_prob:.3f}, real: {real_prob:.3f})")
+        
         processing_time = time.time() - start_time
         
         result = {
@@ -211,9 +225,11 @@ class VideoAnalyzer:
             "model": f"{self.model_name} (VideoMAE)",
             "frame_count": frame_count,
             "probabilities": {
-                "fake": round(probabilities[0].item(), 4),
-                "real": round(probabilities[1].item(), 4)
-            }
+                "fake": round(fake_prob, 4),
+                "real": round(real_prob, 4)
+            },
+            "analysis_notes": f"Using conservative 75% confidence threshold. Requires {confidence_threshold:.0%}+ confidence to classify as FAKE.",
+            "threshold_used": confidence_threshold
         }
         
         logger.success(f"✅ VideoMAE analysis: {verdict} ({confidence:.2%}) in {processing_time:.2f}s")
