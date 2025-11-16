@@ -109,8 +109,9 @@ class SocialMediaExtractor {
         metadata: {
           platform: 'Twitter/X',
           originalUrl: url,
+          tweetId,
         },
-        error: 'Twitter/X videos require backend processing. Use our URL analysis service or download the video manually.'
+        // No error - this indicates backend should handle it
       };
     } catch (error) {
       return {
@@ -137,8 +138,9 @@ class SocialMediaExtractor {
         metadata: {
           platform: 'Instagram',
           originalUrl: url,
+          postId,
         },
-        error: 'Instagram videos require backend processing. Use our URL analysis service or download the video manually.'
+        // No error - this indicates backend should handle it
       };
     } catch (error) {
       return {
@@ -162,7 +164,7 @@ class SocialMediaExtractor {
           platform: 'TikTok',
           originalUrl: url,
         },
-        error: 'TikTok videos require backend processing. Use our URL analysis service or download the video manually.'
+        // No error - this indicates backend should handle it
       };
     } catch (error) {
       return {
@@ -189,8 +191,9 @@ class SocialMediaExtractor {
         metadata: {
           platform: 'YouTube',
           originalUrl: url,
+          videoId,
         },
-        error: 'YouTube videos require backend processing due to CORS restrictions. Use our URL analysis service.'
+        // No error - this indicates backend should handle it
       };
     } catch (error) {
       return {

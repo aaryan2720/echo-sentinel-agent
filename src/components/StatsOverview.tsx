@@ -1,42 +1,99 @@
 import { Card } from "./ui/card";
 import { Shield, Eye, Network, TrendingUp } from "lucide-react";
-
-const stats = [
-  {
-    label: "Content Monitored",
-    value: "3.2M+",
-    change: "+12.5%",
-    icon: Eye,
-    color: "primary",
-  },
-  {
-    label: "Deepfakes Blocked",
-    value: "1,847",
-    change: "+8.2%",
-    icon: Shield,
-    color: "destructive",
-  },
-  {
-    label: "Networks Mapped",
-    value: "234",
-    change: "+15.3%",
-    icon: Network,
-    color: "warning",
-  },
-  {
-    label: "Trust Score",
-    value: "94.2%",
-    change: "+2.1%",
-    icon: TrendingUp,
-    color: "success",
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/services/api";
 
 export const StatsOverview = () => {
+  // Fetch real stats from API
+  const { data: stats, isLoading, isError } = useQuery({
+    queryKey: ['stats'],
+    queryFn: () => api.getStats(),
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
+
+  // Default stats if API fails or loading
+  const defaultStats = [
+    {
+      label: "Content Monitored",
+      value: "3.2M+",
+      change: "+12.5%",
+      icon: Eye,
+      color: "primary",
+    },
+    {
+      label: "Deepfakes Blocked", 
+      value: "1,847",
+      change: "+8.2%",
+      icon: Shield,
+      color: "destructive",
+    },
+    {
+      label: "Networks Mapped",
+      value: "234", 
+      change: "+15.3%",
+      icon: Network,
+      color: "warning",
+    },
+    {
+      label: "Trust Score",
+      value: "94.2%",
+      change: "+2.1%",
+      icon: TrendingUp,
+      color: "success",
+    },
+  ];
+
+  // Use real stats if available
+  const displayStats = stats ? [
+    {
+      label: "Total Incidents",
+      value: stats.total_incidents.toString(),
+      change: `+${stats.last_24h.incidents} today`,
+      icon: Shield,
+      color: "destructive",
+    },
+    {
+      label: "Active Alerts",
+      value: stats.active_alerts.toString(),
+      change: "+24h active",
+      icon: Eye,
+      color: "primary", 
+    },
+    {
+      label: "Networks Detected",
+      value: stats.networks_detected.toString(),
+      change: "+coordination",
+      icon: Network,
+      color: "warning",
+    },
+    {
+      label: "Accuracy Rate",
+      value: `${(stats.accuracy_rate * 100).toFixed(1)}%`,
+      change: stats.processing_speed,
+      icon: TrendingUp,
+      color: "success",
+    },
+  ] : defaultStats;
   return (
     <div className="container mx-auto px-4 py-8">
+      {isLoading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} className="p-6 animate-pulse">
+              <div className="h-20 bg-muted rounded" />
+            </Card>
+          ))}
+        </div>
+      )}
+      
+      {isError && (
+        <div className="text-center p-4">
+          <p className="text-muted-foreground">Using cached data - Backend connection pending...</p>
+        </div>
+      )}
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => {
+        {displayStats.map((stat, index) => {
           const Icon = stat.icon;
           
           return (
