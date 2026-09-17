@@ -239,6 +239,48 @@ const Landing = () => {
             </div>
           </Card>
         </div>
+
+        {/* Development Tools Section */}
+        <div className="max-w-4xl mx-auto py-16 border-t">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold mb-4">Development & Testing Tools</h2>
+            <p className="text-muted-foreground">
+              Test our AI systems directly with these development interfaces
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="p-4 hover-lift cursor-pointer border-2 hover:border-primary/50 transition-colors">
+              <div onClick={() => navigate('/visual-test')} className="text-center space-y-2">
+                <Eye className="w-8 h-8 mx-auto text-primary" />
+                <h3 className="font-semibold">Visual Agent Test</h3>
+                <p className="text-sm text-muted-foreground">
+                  Test deepfake detection on images and videos
+                </p>
+              </div>
+            </Card>
+
+            <Card className="p-4 hover-lift cursor-pointer border-2 hover:border-primary/50 transition-colors">
+              <div onClick={() => navigate('/url-analysis')} className="text-center space-y-2">
+                <Globe className="w-8 h-8 mx-auto text-primary" />
+                <h3 className="font-semibold">URL Analysis</h3>
+                <p className="text-sm text-muted-foreground">
+                  Analyze social media URLs for deepfakes
+                </p>
+              </div>
+            </Card>
+
+            <Card className="p-4 hover-lift cursor-pointer border-2 hover:border-primary/50 transition-colors">
+              <div onClick={() => navigate('/agent-test')} className="text-center space-y-2">
+                <Brain className="w-8 h-8 mx-auto text-primary" />
+                <h3 className="font-semibold">Agent Testing</h3>
+                <p className="text-sm text-muted-foreground">
+                  Test all AI agents and coordination
+                </p>
+              </div>
+            </Card>
+          </div>
+        </div>
       </main>
     </div>
   );

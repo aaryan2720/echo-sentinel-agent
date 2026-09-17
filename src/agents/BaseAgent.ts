@@ -38,6 +38,7 @@ export interface AgentMetrics {
   tasksProcessed: number;
   tasksSucceeded: number;
   tasksFailed: number;
+  tasksCompleted: number; // Alias for tasksSucceeded
   averageProcessingTime: number;
   uptime: number;
   lastActive: Date;
@@ -65,6 +66,7 @@ export abstract class BaseAgent {
       tasksProcessed: 0,
       tasksSucceeded: 0,
       tasksFailed: 0,
+      tasksCompleted: 0,
       averageProcessingTime: 0,
       uptime: 0,
       lastActive: new Date(),
@@ -251,6 +253,7 @@ export abstract class BaseAgent {
 
         this.metrics.tasksProcessed++;
         this.metrics.tasksSucceeded++;
+        this.metrics.tasksCompleted++; // Also increment tasksCompleted
         this.updateAverageProcessingTime(processingTime);
         this.metrics.lastActive = new Date();
 
