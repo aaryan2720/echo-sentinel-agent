@@ -12,6 +12,7 @@ import httpx
 from typing import Optional
 
 from app.services.video_analyzer import get_video_analyzer
+from app.services.video_extractor import video_extractor
 from app.config import get_settings
 
 router = APIRouter()
@@ -115,7 +116,7 @@ async def analyze_video_url(
     request: VideoURLRequest
 ):
     """
-    Analyze video from URL (supports direct URLs and some social media)
+    Analyze video from URL (supports direct URLs and social media via yt-dlp)
     
     Args:
         request: VideoURLRequest with video URL
@@ -124,75 +125,93 @@ async def analyze_video_url(
         Analysis result with verdict and confidence
     """
     temp_file = None
+    video_info = None
     
     try:
         url = str(request.url)
         logger.info(f"🔗 Processing video URL: {url}")
         
-        # Validate and potentially extract direct video URL
-        try:
-            extracted_url = await extract_video_url(url)
-            if extracted_url != url:
-                logger.info(f"📱 Extracted direct URL: {extracted_url}")
-                url = extracted_url
-        except HTTPException as extraction_error:
-            # Re-raise HTTP exceptions (these are user-facing errors)
-            raise extraction_error
-        
-        # Download video
-        async with httpx.AsyncClient(
-            timeout=60.0,  # Increased timeout for social media
-            follow_redirects=True,
-            headers={
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            }
-        ) as client:
-            response = await client.get(url)
-            response.raise_for_status()
+        # Check if it's a social media URL that needs extraction
+        if video_extractor.is_social_media_url(url):
+            logger.info(f"📱 Social media URL detected, using yt-dlp extraction")
             
-            # Check content type
-            content_type = response.headers.get("content-type", "")
+            # Extract video using yt-dlp
+            temp_file, video_info = video_extractor.extract_and_analyze_ready(url)
             
-            # If we get HTML, this is likely a social media page, not a direct video
-            if content_type.startswith("text/html"):
-                raise HTTPException(
-                    status_code=400,
-                    detail="URL points to a webpage (HTML), not a direct video file. Social media URLs need video extraction. Please use a direct video URL (.mp4, .webm, etc.) or upload the video file directly."
-                )
-            
-            if not (content_type.startswith("video/") or content_type.startswith("application/")):
-                # Some edge cases might still work
-                logger.warning(f"⚠️ Unexpected content-type: {content_type}, trying anyway...")
-            
-            # Check size
-            content_length = response.headers.get("content-length")
-            if content_length:
-                size_mb = int(content_length) / 1024 / 1024
-                if size_mb > settings.max_video_size_mb:
+            if not temp_file:
+                if video_info and video_info.get('duration', 0) > 300:
                     raise HTTPException(
                         status_code=400,
-                        detail=f"Video too large: {size_mb:.2f}MB. Max size: {settings.max_video_size_mb}MB"
+                        detail=f"Video too long ({video_info['duration']}s) for analysis. Maximum: 300s (5 minutes)"
+                    )
+                else:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Failed to extract video from social media URL. The video might be private, deleted, or from an unsupported format."
                     )
             
-            # Save to temp file
-            suffix = Path(url).suffix or ".mp4"
-            with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
-                tmp.write(response.content)
-                temp_file = tmp.name
-        
-        logger.debug(f"💾 Downloaded to temp file: {temp_file}")
+            logger.info(f"✅ Video extracted successfully: {video_info.get('title', 'Unknown')} ({video_info.get('duration', 0)}s)")
+            
+        else:
+            # Handle direct video URLs (existing logic)
+            logger.info(f"🔗 Direct video URL, downloading...")
+            
+            async with httpx.AsyncClient(
+                timeout=60.0,
+                follow_redirects=True,
+                headers={
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                }
+            ) as client:
+                response = await client.get(url)
+                response.raise_for_status()
+                
+                # Check content type
+                content_type = response.headers.get("content-type", "")
+                
+                if content_type.startswith("text/html"):
+                    raise HTTPException(
+                        status_code=400,
+                        detail="URL points to a webpage (HTML), not a direct video file. For social media URLs, the system will automatically extract the video. Please check the URL or try again."
+                    )
+                
+                if not (content_type.startswith("video/") or content_type.startswith("application/")):
+                    logger.warning(f"⚠️ Unexpected content-type: {content_type}, trying anyway...")
+                
+                # Check size
+                content_length = response.headers.get("content-length")
+                if content_length:
+                    size_mb = int(content_length) / 1024 / 1024
+                    if size_mb > settings.max_video_size_mb:
+                        raise HTTPException(
+                            status_code=400,
+                            detail=f"Video too large: {size_mb:.2f}MB. Max size: {settings.max_video_size_mb}MB"
+                        )
+                
+                # Save to temp file
+                suffix = Path(url).suffix or ".mp4"
+                with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+                    tmp.write(response.content)
+                    temp_file = tmp.name
+            
+            logger.debug(f"💾 Downloaded direct video to temp file: {temp_file}")
         
         # Analyze video
         analyzer = get_video_analyzer()
         result = await analyzer.analyze_video(temp_file)
         
-        # Add original URL to result
+        # Add metadata to result
         result["original_url"] = str(request.url)
-        if extracted_url != str(request.url):
-            result["extracted_url"] = extracted_url
+        if video_info:
+            result["video_title"] = video_info.get('title', 'Unknown')
+            result["platform"] = video_info.get('platform', 'Unknown')
+            result["duration"] = video_info.get('duration', 0)
+            result["uploader"] = video_info.get('uploader', 'Unknown')
         
         # Schedule cleanup
         background_tasks.add_task(cleanup_temp_file, temp_file)
+        if temp_file:
+            background_tasks.add_task(video_extractor.cleanup_video, temp_file)
         
         return result
         
@@ -205,6 +224,7 @@ async def analyze_video_url(
         logger.error(f"❌ Video analysis failed: {e}")
         if temp_file:
             await cleanup_temp_file(temp_file)
+            video_extractor.cleanup_video(temp_file)
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
 
 
@@ -310,11 +330,12 @@ async def get_models():
         "image_model": settings.image_model_name,
         "device": "cuda" if settings.use_gpu else "cpu",
         "max_video_size_mb": settings.max_video_size_mb,
-        "supported_platforms": [
-            "Twitter/X (x.com, twitter.com)",
-            "Instagram (instagram.com)", 
-            "TikTok (tiktok.com)",
-            "YouTube (youtube.com, youtu.be)",
-            "Direct video URLs (.mp4, .webm, .mov, etc.)"
-        ]
+        "video_extraction": "yt-dlp enabled",
+        "supported_platforms": video_extractor.get_supported_platforms(),
+        "capabilities": {
+            "direct_urls": "✅ Full support (.mp4, .webm, .mov, etc.)",
+            "social_media": "✅ Full extraction via yt-dlp",
+            "max_duration": "300 seconds (5 minutes)",
+            "platforms": len(video_extractor.get_supported_platforms())
+        }
     }
