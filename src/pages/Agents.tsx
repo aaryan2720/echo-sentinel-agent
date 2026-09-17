@@ -2,11 +2,26 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
+import { DemoBanner } from "@/components/DemoBanner";
+import { LastUpdated } from "@/components/LastUpdated";
 import { LogOut, Brain, Activity, CheckCircle, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "@/hooks/use-notification";
 
 const Agents = () => {
   const navigate = useNavigate();
+  const { showSuccess, showInfo, showWarning } = useNotification();
+
+  const handleRestartAgent = (agentId: number, agentName: string) => {
+    showWarning("Restarting Agent", `${agentName} is being restarted...`);
+    setTimeout(() => {
+      showSuccess("Agent Online", `${agentName} has been restarted successfully.`);
+    }, 2000);
+  };
+
+  const handleViewLogs = (agentId: number, agentName: string) => {
+    showInfo("Loading Logs", `Fetching execution logs for ${agentName}...`);
+  };
 
   const agents = [
     {
@@ -63,12 +78,13 @@ const Agents = () => {
 
   return (
     <div className="min-h-screen relative">
+      <DemoBanner />
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-glow" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }} />
       </div>
 
-      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50">
+      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50 mt-12">
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
@@ -76,22 +92,22 @@ const Agents = () => {
               <span className="text-2xl font-bold font-mono text-primary">EchoBreaker</span>
             </div>
             <div className="flex gap-4">
-              <Button variant="ghost" onClick={() => navigate('/dashboard')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/dashboard')} className="font-mono hover-lift">
                 Dashboard
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/analytics')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/analytics')} className="font-mono hover-lift">
                 Analytics
               </Button>
-              <Button variant="default" className="font-mono">
+              <Button variant="default" className="font-mono hover-glow">
                 Agents
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/network')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/network')} className="font-mono hover-lift">
                 Network
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono hover-lift">
                 Incidents
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono hover-lift">
                 Alerts
               </Button>
             </div>
@@ -104,16 +120,19 @@ const Agents = () => {
       </header>
 
       <div className="relative z-10 container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 font-mono text-primary">
-            Agentic AI Status
-          </h1>
-          <p className="text-muted-foreground">Autonomous agents monitoring and detecting misinformation</p>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold mb-2 font-mono text-primary">
+              Agentic AI Status
+            </h1>
+            <p className="text-muted-foreground">Autonomous agents monitoring and detecting misinformation</p>
+          </div>
+          <LastUpdated />
         </div>
 
         {/* Agent Overview Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className="p-4 bg-card/50 backdrop-blur-sm border-primary/20">
+          <Card className="p-4 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center">
                 <CheckCircle className="w-6 h-6 text-success" />
@@ -125,7 +144,7 @@ const Agents = () => {
             </div>
           </Card>
           
-          <Card className="p-4 bg-card/50 backdrop-blur-sm border-primary/20">
+          <Card className="p-4 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center">
                 <Activity className="w-6 h-6 text-warning" />
@@ -149,7 +168,7 @@ const Agents = () => {
             </div>
           </Card>
 
-          <Card className="p-4 bg-card/50 backdrop-blur-sm border-primary/20">
+          <Card className="p-4 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
                 <AlertCircle className="w-6 h-6 text-accent" />
@@ -167,7 +186,7 @@ const Agents = () => {
           {agents.map((agent, idx) => (
             <Card
               key={agent.id}
-              className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up"
+              className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up card-interactive"
               style={{ animationDelay: `${idx * 100}ms` }}
             >
               <div className="flex items-start justify-between mb-4">
@@ -208,7 +227,26 @@ const Agents = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 mt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="font-mono hover-lift"
+                  onClick={() => handleViewLogs(agent.id, agent.name)}
+                >
+                  View Logs
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="font-mono hover-lift"
+                  onClick={() => handleRestartAgent(agent.id, agent.name)}
+                >
+                  Restart
+                </Button>
+              </div>
+
+              <div className="flex items-center gap-2 mt-4">
                 <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                   <div
                     className="h-full bg-primary animate-scan"

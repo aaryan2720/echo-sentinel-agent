@@ -2,6 +2,10 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
+import { DemoBanner } from "@/components/DemoBanner";
+import { LastUpdated } from "@/components/LastUpdated";
+import { useNotification } from "@/hooks/use-notification";
+import { generateIncidentPDF } from "@/lib/pdfGenerator";
 import { LogOut, FileText, Download, AlertTriangle, Users, Clock, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -63,14 +67,47 @@ const Incidents = () => {
     },
   ];
 
+  const { showSuccess, showInfo } = useNotification();
+
+  const handleDownloadPDF = (incident: typeof incidents[0]) => {
+    showInfo("PDF Download", `Generating incident report for ${incident.id}...`);
+    
+    // Generate actual PDF
+    setTimeout(() => {
+      generateIncidentPDF({
+        id: incident.id,
+        title: incident.title,
+        platform: incident.platforms.join(', '),
+        confidence: incident.confidence,
+        type: incident.severity,
+        timestamp: incident.timestamp,
+        status: incident.status,
+        description: incident.description,
+        evidence: [
+          `${incident.accounts} coordinated accounts detected`,
+          `Reached ${incident.reach} users across platforms`,
+          `${incident.evidence} pieces of digital evidence collected`,
+          `Confidence score: ${incident.confidence}% based on multimodal analysis`,
+        ],
+      });
+      showSuccess("Download Complete", "Incident report PDF has been downloaded successfully.");
+    }, 800);
+  };
+
+  const handleViewReport = (incidentId: string) => {
+    showInfo("Opening Report", `Loading full details for ${incidentId}...`);
+  };
+
   return (
     <div className="min-h-screen relative">
+      <DemoBanner />
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-glow" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }} />
       </div>
 
-      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50">
+            {/* Header */}
+      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50 mt-12">
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
@@ -123,7 +160,7 @@ const Incidents = () => {
           {incidents.map((incident, idx) => (
             <Card
               key={incident.id}
-              className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up hover:border-primary/40 transition-all"
+              className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up hover:border-primary/40 transition-all card-interactive"
               style={{ animationDelay: `${idx * 100}ms` }}
             >
               <div className="flex items-start justify-between mb-4">
@@ -205,11 +242,19 @@ const Incidents = () => {
               </div>
 
               <div className="flex gap-3">
-                <Button variant="default" className="font-mono flex-1">
+                <Button 
+                  variant="default" 
+                  className="font-mono flex-1 hover-lift"
+                  onClick={() => handleViewReport(incident.id)}
+                >
                   <FileText className="w-4 h-4 mr-2" />
                   View Full Report
                 </Button>
-                <Button variant="outline" className="font-mono">
+                <Button 
+                  variant="outline" 
+                  className="font-mono hover-lift"
+                  onClick={() => handleDownloadPDF(incident)}
+                >
                   <Download className="w-4 h-4 mr-2" />
                   Download PDF
                 </Button>

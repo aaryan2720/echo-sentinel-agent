@@ -4,20 +4,29 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Logo } from "@/components/Logo";
+import { DemoBanner } from "@/components/DemoBanner";
+import { LastUpdated } from "@/components/LastUpdated";
 import { LogOut, Settings as SettingsIcon, Bell, Shield, Database, Webhook } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "@/hooks/use-notification";
 
 const Settings = () => {
   const navigate = useNavigate();
+  const { showSuccess } = useNotification();
+
+  const handleSaveSettings = () => {
+    showSuccess("Settings Saved", "Your configuration has been updated successfully.");
+  };
 
   return (
     <div className="min-h-screen relative">
+      <DemoBanner />
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-glow" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }} />
       </div>
 
-      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50">
+      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50 mt-12">
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
@@ -25,22 +34,22 @@ const Settings = () => {
               <span className="text-2xl font-bold font-mono text-primary">EchoBreaker</span>
             </div>
             <div className="flex gap-4">
-              <Button variant="ghost" onClick={() => navigate('/dashboard')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/dashboard')} className="font-mono hover-lift">
                 Dashboard
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/analytics')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/analytics')} className="font-mono hover-lift">
                 Analytics
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/agents')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/agents')} className="font-mono hover-lift">
                 Agents
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/network')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/network')} className="font-mono hover-lift">
                 Network
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono hover-lift">
                 Incidents
               </Button>
-              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono">
+              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono hover-lift">
                 Alerts
               </Button>
             </div>
@@ -53,16 +62,19 @@ const Settings = () => {
       </header>
 
       <div className="relative z-10 container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 font-mono text-primary">
-            Settings & Configuration
-          </h1>
-          <p className="text-muted-foreground">Configure system behavior, integrations, and alert thresholds</p>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold mb-2 font-mono text-primary">
+              Settings & Configuration
+            </h1>
+            <p className="text-muted-foreground">Configure system behavior, integrations, and alert thresholds</p>
+          </div>
+          <LastUpdated />
         </div>
 
         <div className="space-y-6">
           {/* Alert Configuration */}
-          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20">
+          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
             <div className="flex items-center gap-3 mb-6">
               <Bell className="w-6 h-6 text-primary" />
               <h2 className="text-2xl font-bold text-foreground font-mono">Alert Configuration</h2>
@@ -100,7 +112,7 @@ const Settings = () => {
           </Card>
 
           {/* Platform Connectors */}
-          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20">
+          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
             <div className="flex items-center gap-3 mb-6">
               <Database className="w-6 h-6 text-primary" />
               <h2 className="text-2xl font-bold text-foreground font-mono">Platform Connectors</h2>
@@ -120,7 +132,7 @@ const Settings = () => {
           </Card>
 
           {/* Webhook Integration */}
-          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20">
+          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
             <div className="flex items-center gap-3 mb-6">
               <Webhook className="w-6 h-6 text-primary" />
               <h2 className="text-2xl font-bold text-foreground font-mono">Webhook Integration</h2>
@@ -155,7 +167,7 @@ const Settings = () => {
           </Card>
 
           {/* Detection Thresholds */}
-          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20">
+          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
             <div className="flex items-center gap-3 mb-6">
               <Shield className="w-6 h-6 text-primary" />
               <h2 className="text-2xl font-bold text-foreground font-mono">Detection Thresholds</h2>
@@ -200,11 +212,15 @@ const Settings = () => {
 
           {/* Save Button */}
           <div className="flex gap-4">
-            <Button className="flex-1 font-mono" size="lg">
+            <Button 
+              className="flex-1 font-mono hover-lift" 
+              size="lg"
+              onClick={handleSaveSettings}
+            >
               <SettingsIcon className="w-4 h-4 mr-2" />
               Save Changes
             </Button>
-            <Button variant="outline" className="flex-1 font-mono" size="lg">
+            <Button variant="outline" className="flex-1 font-mono hover-lift" size="lg">
               Reset to Defaults
             </Button>
           </div>
