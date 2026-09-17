@@ -360,6 +360,15 @@ class IncidentGenerator:
             "estimated_reach": incident.estimated_reach
         }
     
+    def get_incident_by_id(self, incident_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Get incident details by ID
+        """
+        incident = self.incidents.get(incident_id)
+        if incident:
+            return self._incident_to_dict(incident)
+        return None
+
     def get_incident_stats(self) -> Dict[str, Any]:
         """Get incident statistics"""
         incidents = list(self.incidents.values())
@@ -370,7 +379,9 @@ class IncidentGenerator:
                 "by_severity": {},
                 "by_platform": {},
                 "by_status": {},
-                "recent_24h": 0
+                "recent_24h": 0,
+                "avg_confidence": 0.0,
+                "total_estimated_reach": 0
             }
         
         # Calculate stats

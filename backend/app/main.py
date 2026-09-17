@@ -30,6 +30,18 @@ class IncidentStatusUpdate(BaseModel):
     status: str
     notes: Optional[str] = None
 
+class IncidentCreateRequest(BaseModel):
+    title: str
+    description: str
+    platform: str
+    severity: Optional[str] = "medium"
+    status: Optional[str] = "investigating"
+    confidence: Optional[float] = 0.85
+    verdict: Optional[str] = "FAKE"
+    source_url: Optional[str] = ""
+    media_url: Optional[str] = None
+    network_size: Optional[int] = 1
+
 # Create FastAPI app
 app = FastAPI(
     title="Echo Sentinel Agent - Python Backend",
@@ -350,6 +362,90 @@ async def get_incidents(
                 "description": "Synthetic voice clone of celebrity endorsing fake product"
             }
         ]
+
+@app.get("/api/incidents/{incident_id}")
+async def get_incident(incident_id: str):
+    """Get incident details by ID"""
+    try:
+        from app.services.incident_generator import get_incident_generator
+        incident_generator = get_incident_generator()
+        incident = incident_generator.get_incident_by_id(incident_id)
+        if incident:
+            return incident
+    except Exception as e:
+        logger.warning(f"Could not load auto-generated incident: {e}")
+
+    legacy_incidents = [
+        {
+            "id": "INC-001",
+            "title": "Political Deepfake Video - Election Campaign", 
+            "confidence": 0.94,
+            "verdict": "FAKE",
+            "timestamp": "2025-11-15T10:30:00Z",
+            "platform": "Twitter",
+            "network_size": 187,
+            "status": "active",
+            "description": "Coordinated deepfake video campaign targeting election narratives"
+        },
+        {
+            "id": "INC-002",
+            "title": "Coordinated Bot Network - Crypto Manipulation",
+            "confidence": 0.89, 
+            "verdict": "FAKE",
+            "timestamp": "2025-11-15T14:22:00Z",
+            "platform": "Instagram", 
+            "network_size": 234,
+            "status": "investigating",
+            "description": "234 bot accounts coordinating crypto pump & dump scheme"
+        },
+        {
+            "id": "INC-003",
+            "title": "Audio Deepfake - Celebrity Endorsement",
+            "confidence": 0.91,
+            "verdict": "FAKE", 
+            "timestamp": "2025-11-16T08:45:00Z",
+            "platform": "TikTok",
+            "network_size": 92,
+            "status": "resolved",
+            "description": "Synthetic voice clone of celebrity endorsing fake product"
+        }
+    ]
+    for inc in legacy_incidents:
+        if inc["id"].lower() == incident_id.lower():
+            return inc
+
+    raise HTTPException(status_code=404, detail="Incident not found")
+
+@app.post("/api/incidents")
+async def create_incident(request: IncidentCreateRequest):
+    """Create a new incident"""
+    try:
+        import uuid
+        from app.services.incident_generator import get_incident_generator
+        incident_generator = get_incident_generator()
+        incident_data = {
+            "title": request.title,
+            "description": request.description,
+            "platform": request.platform,
+            "confidence": request.confidence if request.confidence is not None else 0.85,
+            "verdict": request.verdict or "FAKE",
+            "url": request.source_url or "",
+            "media_url": request.media_url,
+            "source_type": "manual_api",
+            "source_id": str(uuid.uuid4())[:8],
+            "metadata": {
+                "network_size": request.network_size or 1
+            }
+        }
+        incident_id = await incident_generator.create_incident(incident_data)
+        return {
+            "success": True,
+            "id": incident_id,
+            "message": f"Incident {incident_id} created successfully"
+        }
+    except Exception as e:
+        logger.error(f"Failed to create incident: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to create incident: {str(e)}")
 
 @app.get("/api/alerts")
 async def get_alerts():
