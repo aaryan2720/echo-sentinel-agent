@@ -18,6 +18,7 @@ import AgentTest from "./pages/AgentTest";
 import VisualAgentTest from "./pages/VisualAgentTest";
 import URLAnalysisPage from "./pages/URLAnalysisPage";
 import SystemStatus from "./pages/SystemStatus";
+import InstagramMonitoring from "./pages/InstagramMonitoring";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ const App = () => (
           <Route path="/visual-test" element={<VisualAgentTest />} />
           <Route path="/url-analysis" element={<URLAnalysisPage />} />
           <Route path="/system-status" element={<SystemStatus />} />
+          <Route path="/instagram-monitoring" element={<InstagramMonitoring />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
