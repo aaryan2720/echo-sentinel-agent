@@ -42,6 +42,7 @@ interface EndpointStatus {
 
 export default function SystemStatusPage() {
   const navigate = useNavigate();
+  const backendBaseUrl = import.meta.env.VITE_PYTHON_API_URL || 'http://localhost:8000';
   const [endpoints, setEndpoints] = useState<EndpointStatus[]>([
     // Frontend Routes
     {
@@ -118,7 +119,7 @@ export default function SystemStatusPage() {
     // Backend APIs
     {
       name: 'FastAPI Interactive Swagger UI',
-      path: 'http://localhost:8001/docs',
+      path: `${backendBaseUrl}/docs`,
       description: 'Swagger OpenAPI 3.0 specification & live runner',
       status: 'online',
       type: 'backend',
@@ -128,7 +129,7 @@ export default function SystemStatusPage() {
     },
     {
       name: 'FastAPI ReDoc API Docs',
-      path: 'http://localhost:8001/redoc',
+      path: `${backendBaseUrl}/redoc`,
       description: 'Detailed API schemas and response models',
       status: 'online',
       type: 'backend',
@@ -138,7 +139,7 @@ export default function SystemStatusPage() {
     },
     {
       name: 'VideoMAE Inference Endpoint',
-      path: 'http://localhost:8001/api/models',
+      path: `${backendBaseUrl}/api/models`,
       description: 'Vision Transformer weights & hardware acceleration',
       status: 'online',
       type: 'backend',

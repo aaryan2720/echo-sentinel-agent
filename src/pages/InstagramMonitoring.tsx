@@ -31,24 +31,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '@/hooks/use-notification';
-
-interface MonitoringJob {
-  id: string;
-  hashtags: string[];
-  posts_scanned: number;
-  deepfakes_found: number;
-  last_scan: string | null;
-  active: boolean;
-}
-
-interface MonitoringStatus {
-  active_jobs: number;
-  total_hashtags: number;
-  posts_scanned: number;
-  deepfakes_detected: number;
-  detection_rate: number;
-  jobs: MonitoringJob[];
-}
+import { api, type InstagramMonitoringStatus } from '@/services/api';
 
 export default function InstagramMonitoringPage() {
   const navigate = useNavigate();
@@ -56,7 +39,7 @@ export default function InstagramMonitoringPage() {
   const [hashtags, setHashtags] = useState('politics, election2024, deepfake');
   const [keywords, setKeywords] = useState('leaked, breaking, speech');
   const [isStarting, setIsStarting] = useState(false);
-  const [monitoringStatus, setMonitoringStatus] = useState<MonitoringStatus | null>(null);
+  const [monitoringStatus, setMonitoringStatus] = useState<InstagramMonitoringStatus | null>(null);
   const [logs, setLogs] = useState<string[]>([
     `[${new Date().toLocaleTimeString()}] [SYSTEM] Instagram monitoring daemon initialized`,
     `[${new Date().toLocaleTimeString()}] [STATUS] Polling engine connected to background worker`,
@@ -76,31 +59,10 @@ export default function InstagramMonitoringPage() {
 
   const fetchMonitoringStatus = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/instagram/monitor/status');
-      if (response.ok) {
-        const status = await response.json();
-        setMonitoringStatus(status);
-      } else {
-        // Fallback demo status
-        setMonitoringStatus({
-          active_jobs: 1,
-          total_hashtags: 3,
-          posts_scanned: 48,
-          deepfakes_detected: 2,
-          detection_rate: 4.1,
-          jobs: [
-            {
-              id: "job-insta-001",
-              hashtags: ["politics", "election2024", "breaking"],
-              posts_scanned: 48,
-              deepfakes_found: 2,
-              last_scan: "2 minutes ago",
-              active: true,
-            }
-          ]
-        });
-      }
+      const status = await api.getInstagramMonitoringStatus();
+      setMonitoringStatus(status);
     } catch (error) {
+      // Fallback demo status
       setMonitoringStatus({
         active_jobs: 1,
         total_hashtags: 3,
@@ -134,24 +96,14 @@ export default function InstagramMonitoringPage() {
     addLog(`🚀 Deploying monitoring daemon for: #${hashtagList.join(', #')}`);
 
     try {
-      const response = await fetch('http://localhost:8000/api/instagram/monitor/start', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          hashtags: hashtagList,
-          keywords: keywordList.length > 0 ? keywordList : undefined,
-        }),
-      });
+      const result = await api.startInstagramMonitoring(
+        hashtagList,
+        keywordList.length > 0 ? keywordList : undefined
+      );
 
-      if (response.ok) {
-        const result = await response.json();
-        addLog(`✅ Job active with ID: ${result.job_id}`);
-        showSuccess("Monitoring Started", `Monitoring hashtags: #${hashtagList.join(', #')}`);
-        fetchMonitoringStatus();
-      } else {
-        addLog(`ℹ️ Mock job started locally for demonstration.`);
-        showSuccess("Monitoring Active", `Monitoring #${hashtagList.join(', #')}`);
-      }
+      addLog(`✅ Job active with ID: ${result.job_id}`);
+      showSuccess("Monitoring Started", `Monitoring hashtags: #${hashtagList.join(', #')}`);
+      fetchMonitoringStatus();
     } catch (error) {
       addLog(`ℹ️ Daemon initialized in standalone simulation mode.`);
       showSuccess("Monitoring Active", `Monitoring #${hashtagList.join(', #')}`);
@@ -162,8 +114,17 @@ export default function InstagramMonitoringPage() {
 
   const stopMonitoring = async (jobId: string) => {
     addLog(`⏹️ Stopping monitoring job: ${jobId}`);
+    try {
+      await api.stopInstagramMonitoring(jobId);
+    } catch (err) {
+      console.warn("Could not stop monitoring job on backend, updating local state:", err);
+    }
     showWarning("Job Stopped", `Monitoring job ${jobId} deactivated.`);
-    setMonitoringStatus(prev => prev ? { ...prev, active_jobs: Math.max(0, prev.active_jobs - 1) } : null);
+    setMonitoringStatus(prev => prev ? {
+      ...prev,
+      active_jobs: Math.max(0, prev.active_jobs - 1),
+      jobs: prev.jobs.map(j => j.id === jobId ? { ...j, active: false } : j)
+    } : null);
   };
 
   useEffect(() => {
