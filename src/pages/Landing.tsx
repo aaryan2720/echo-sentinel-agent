@@ -1,289 +1,395 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/Logo";
 import { DemoBanner } from "@/components/DemoBanner";
-import { Network, AlertTriangle, Brain, ArrowRight, Scan, Eye, Shield, Zap, Users, Globe } from "lucide-react";
+import { 
+  Network, 
+  AlertTriangle, 
+  Brain, 
+  ArrowRight, 
+  Scan, 
+  Eye, 
+  Shield, 
+  Zap, 
+  Users, 
+  Globe,
+  Radio,
+  CheckCircle2,
+  Lock,
+  Layers,
+  Sparkles,
+  Terminal,
+  Activity
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const Landing = () => {
+export default function Landing() {
   const navigate = useNavigate();
 
+  const agents = [
+    {
+      icon: Scan,
+      title: "Continuous Monitoring Agent",
+      description: "Autonomously ingests high-velocity streams across X, Telegram, YouTube, and Reddit. Prioritizes spikes using velocity scoring and geolocation clustering.",
+      badge: "Real-Time Ingestion",
+      color: "text-primary",
+      bg: "bg-primary/10 border-primary/20",
+    },
+    {
+      icon: Eye,
+      title: "Multimodal Deepfake Detector",
+      description: "Applies Vision Transformers, voice spectrogram artifacts analysis, and NLP cross-verification to generate confidence scores and frame-level evidence.",
+      badge: "ViT + Audio Forensics",
+      color: "text-accent",
+      bg: "bg-accent/10 border-accent/20",
+    },
+    {
+      icon: Network,
+      title: "Coordination Detection Agent",
+      description: "Constructs live propagation graphs using Graph Neural Networks. Flags synchronized posting, template reuse, and bot amplification rings.",
+      badge: "GNN Topology",
+      color: "text-warning",
+      bg: "bg-warning/10 border-warning/20",
+    },
+    {
+      icon: Brain,
+      title: "Causality & Attribution Agent",
+      description: "Traces media origin hashes, seed accounts, and timeline provenance to pinpoint coordinated threat actors and campaign playbooks.",
+      badge: "Provenance Mapping",
+      color: "text-success",
+      bg: "bg-success/10 border-success/20",
+    },
+    {
+      icon: Zap,
+      title: "Response & Reporting Agent",
+      description: "Autonomously synthesizes forensic dossiers, PDF evidence packs, and instant webhook dispatches for newsrooms and platform moderators.",
+      badge: "Dossier Synthesis",
+      color: "text-destructive",
+      bg: "bg-destructive/10 border-destructive/20",
+    },
+    {
+      icon: Shield,
+      title: "Self-Improving Agent",
+      description: "Ingests human analyst feedback from the review queue and updates model embeddings to defend against evolving evasion techniques.",
+      badge: "Active HITL Feedback",
+      color: "text-primary",
+      bg: "bg-primary/10 border-primary/20",
+    },
+  ];
+
+  const targetAudiences = [
+    {
+      icon: Users,
+      title: "Journalists & Newsrooms",
+      description: "Receive high-fidelity alerts with verified evidence chains, frame breakdowns, and downloadable forensic dossiers before unverified clips go viral.",
+    },
+    {
+      icon: Shield,
+      title: "Fact-Checking Organizations",
+      description: "Streamline investigation timelines with explainable AI reasoning, media hash cross-references, and network propagation analysis.",
+    },
+    {
+      icon: Globe,
+      title: "Platform Trust & Safety",
+      description: "Leverage automated cluster mapping and synchronized behavior telemetry to neutralize coordinated bot operations at scale.",
+    },
+    {
+      icon: AlertTriangle,
+      title: "Election & Crisis Authorities",
+      description: "Maintain real-time situational awareness during sensitive elections and emergency situations with proactive threat velocity monitors.",
+    },
+  ];
+
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground flex flex-col relative selection:bg-primary/20 selection:text-primary overflow-x-hidden">
       <DemoBanner />
-      {/* Ambient Background Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-glow" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }} />
+
+      {/* Ambient background glows */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/[0.04] rounded-full blur-[160px]" />
+        <div className="absolute top-1/3 right-10 w-[400px] h-[400px] bg-accent/[0.03] rounded-full blur-[140px]" />
       </div>
 
-      {/* Header */}
-      <header className="relative z-10 container mx-auto px-4 py-6 mt-12">
-        <nav className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      {/* Top Navbar */}
+      <header className="sticky top-0 z-40 w-full border-b border-border/70 bg-background/80 backdrop-blur-md">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-3">
             <Logo />
-            <span className="text-2xl font-bold font-mono text-primary">EchoBreaker</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-bold tracking-tight text-foreground">EchoBreaker</span>
+              <span className="hidden sm:inline-block text-[10px] uppercase font-mono tracking-wider px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/25">
+                Sentinel AI
+              </span>
+            </div>
           </div>
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/auth')}
-            className="font-mono hover-lift"
-          >
-            Sign In
-          </Button>
-        </nav>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/50 border border-border text-xs text-muted-foreground">
+              <span className="flex h-2 w-2 rounded-full bg-success"></span>
+              <span>Autonomous Sentinel Active</span>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/auth")}
+              className="text-xs font-medium"
+            >
+              Sign In
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => navigate("/dashboard")}
+              className="text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Launch Dashboard
+            </Button>
+          </div>
+        </div>
       </header>
 
-      {/* Hero Section */}
-      <main className="relative z-10 container mx-auto px-4">
-        <div className="max-w-5xl mx-auto text-center py-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-full mb-8 animate-fade-in-up">
-            <Brain className="w-4 h-4 text-primary" />
-            <span className="text-sm font-mono text-primary">Agentic AI-Powered Detection</span>
+      {/* Main Content */}
+      <main className="relative z-10 flex-1">
+        {/* Hero Section */}
+        <section className="container mx-auto px-4 sm:px-6 pt-16 pb-20 lg:pt-24 lg:pb-28 text-center max-w-5xl">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/25 text-xs font-medium text-primary mb-8 animate-fade-in-up">
+            <Radio className="w-3.5 h-3.5 text-primary animate-pulse" />
+            <span>Autonomous Disinformation & Deepfake Defense System</span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            Autonomous Detection of
-            <br />
-            <span className="text-primary">Deepfakes & Propaganda</span>
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground mb-6 leading-[1.1]">
+            Detect & Disrupt <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-primary">
+              Coordinated Deepfake Campaigns
+            </span>
           </h1>
 
-          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            An agentic multimodal AI system that continuously monitors, detects synthetic media, 
-            maps propagation networks, and generates actionable incident reports for journalists 
-            and fact-checkers — autonomously disrupting coordinated influence operations before they spread.
+          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
+            An agentic multimodal AI platform that continuously tracks social media, detects synthetic media with ViT forensics, maps bot propagation graphs, and generates evidence dossiers for rapid verification.
           </p>
 
-          {/* Problem Highlight */}
-          <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-6 max-w-3xl mx-auto mb-12 animate-fade-in-up" style={{ animationDelay: '0.25s' }}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            <Button
+              size="lg"
+              onClick={() => navigate("/dashboard")}
+              className="w-full sm:w-auto h-12 px-8 text-base font-medium shadow-lg hover:shadow-primary/20 hover-lift"
+            >
+              Enter Sentinel Console
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => navigate("/url-analysis")}
+              className="w-full sm:w-auto h-12 px-8 text-base font-medium border-border hover:bg-secondary/60 hover-lift"
+            >
+              Inspect Media URL
+            </Button>
+          </div>
+
+          {/* Quick Telemetry Strip */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
+            <div className="p-4 rounded-lg bg-card/60 border border-border/70 backdrop-blur-sm">
+              <div className="text-xs text-muted-foreground font-mono uppercase mb-1">Active Agents</div>
+              <div className="text-2xl font-bold font-data text-foreground">6 / 6 Live</div>
+              <div className="text-[11px] text-success mt-1 flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" /> Fully Autonomous
+              </div>
+            </div>
+            <div className="p-4 rounded-lg bg-card/60 border border-border/70 backdrop-blur-sm">
+              <div className="text-xs text-muted-foreground font-mono uppercase mb-1">Detection Precision</div>
+              <div className="text-2xl font-bold font-data text-foreground">96.4%</div>
+              <div className="text-[11px] text-primary mt-1">ViT + Audio Forensics</div>
+            </div>
+            <div className="p-4 rounded-lg bg-card/60 border border-border/70 backdrop-blur-sm">
+              <div className="text-xs text-muted-foreground font-mono uppercase mb-1">Bot Clusters Mapped</div>
+              <div className="text-2xl font-bold font-data text-foreground">1,420+</div>
+              <div className="text-[11px] text-accent mt-1">GNN Graph Topology</div>
+            </div>
+            <div className="p-4 rounded-lg bg-card/60 border border-border/70 backdrop-blur-sm">
+              <div className="text-xs text-muted-foreground font-mono uppercase mb-1">Verification Speed</div>
+              <div className="text-2xl font-bold font-data text-foreground">&lt; 15 sec</div>
+              <div className="text-[11px] text-success mt-1">Automated Dossiers</div>
+            </div>
+          </div>
+        </section>
+
+        {/* Problem Statement Card */}
+        <section className="container mx-auto px-4 sm:px-6 pb-20 max-w-5xl">
+          <div className="p-6 sm:p-8 rounded-xl bg-destructive/5 border border-destructive/20 relative overflow-hidden">
             <div className="flex items-start gap-4">
-              <AlertTriangle className="w-6 h-6 text-destructive flex-shrink-0 mt-1" />
-              <div className="text-left">
-                <h3 className="text-lg font-bold text-destructive mb-2">The Problem</h3>
-                <p className="text-muted-foreground">
-                  Adversaries exploit digital platforms with deepfakes, voice clones, and coordinated bot networks 
-                  to spread misinformation. Traditional fact-checking reacts too slowly, and most systems miss 
-                  <span className="text-foreground font-semibold"> coordinated campaigns</span> — where separate 
-                  actors amplify narratives together. During crises, these operations cause outsized harm: 
-                  violence, election interference, and suppression of truth.
+              <div className="p-2.5 rounded-lg bg-destructive/10 border border-destructive/25 text-destructive flex-shrink-0">
+                <AlertTriangle className="w-6 h-6" />
+              </div>
+              <div className="space-y-2">
+                <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                  The Critical Problem: Asymmetric Information Warfare
+                </h2>
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                  Adversaries deploy high-fidelity deepfakes, synthetic voice clones, and coordinated bot rings across X, Telegram, and TikTok to manipulate elections and public health narratives. Standard reactive fact-checking takes hours or days. EchoBreaker automates detection, graph attribution, and forensic reporting in real time before the narrative spreads.
                 </p>
               </div>
             </div>
           </div>
+        </section>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <Button 
-              size="lg" 
-              onClick={() => navigate('/auth')}
-              className="font-mono text-lg group hover-lift"
-            >
-              Get Started
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              onClick={() => navigate('/dashboard')}
-              className="font-mono text-lg hover-lift"
-            >
-              View Live Dashboard
-            </Button>
-          </div>
-        </div>
-
-        {/* Core Agent Capabilities */}
-        <div className="max-w-6xl mx-auto py-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
-              6 Autonomous AI Agents Working 24/7
+        {/* 6 Autonomous AI Agents Architecture */}
+        <section className="container mx-auto px-4 sm:px-6 py-16 border-t border-border/50 max-w-6xl">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <Badge variant="outline" className="mb-3 font-mono text-xs text-primary border-primary/30">
+              Sentinel Architecture
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-4">
+              6 Autonomous Agents Operating 24/7
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Each agent continuously executes specialized tasks, learns from patterns, and coordinates 
-              with others to detect threats before they spread.
+            <p className="text-muted-foreground text-base">
+              Each specialized agent executes deterministic pipelines, communicates via message bus, and feeds continuous telemetry into the central SOC.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                icon: Scan,
-                title: "Continuous Monitoring Agent",
-                description: "Autonomously polls APIs and crawlers across X, YouTube, Telegram, Reddit. Prioritizes analysis based on velocity, novelty, and geographic concentration.",
-                color: "primary"
-              },
-              {
-                icon: Eye,
-                title: "Multimodal Deepfake Detection",
-                description: "Runs ViT-based visual detectors, audio cloning detection, and NLP veracity checks. Produces confidence scores and flags suspicious items.",
-                color: "accent"
-              },
-              {
-                icon: Network,
-                title: "Coordination Detection Agent",
-                description: "Builds propagation graphs using GNNs. Identifies coordinated clusters through synchronized posting, reused content, and timing patterns.",
-                color: "warning"
-              },
-              {
-                icon: Brain,
-                title: "Causality & Attribution",
-                description: "Traces origin seeds, content provenance, and media hashes. Suggests coordinating actors and tactics like bot amplification.",
-                color: "success"
-              },
-              {
-                icon: Zap,
-                title: "Response & Reporting Agent",
-                description: "Generates human-readable incident reports, forensic dossiers, and heatmaps. Triggers real-time alerts to media partners.",
-                color: "destructive"
-              },
-              {
-                icon: Shield,
-                title: "Self-Improving Agent",
-                description: "Aggregates human feedback on detections. Periodically retrains models with new ground truth to adapt to adversarial tactics.",
-                color: "primary"
-              },
-            ].map((agent, idx) => (
-              <Card
-                key={agent.title}
-                className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up hover:border-primary/40 transition-all card-interactive"
-                style={{ animationDelay: `${idx * 100}ms` }}
-              >
-                <div className={`w-12 h-12 bg-${agent.color}/10 border border-${agent.color}/30 rounded-lg flex items-center justify-center mb-4`}>
-                  <agent.icon className={`w-6 h-6 text-${agent.color}`} />
-                </div>
-                <h3 className="text-lg font-bold mb-2 text-foreground">{agent.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{agent.description}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
+            {agents.map((agent) => {
+              const Icon = agent.icon;
+              return (
+                <div
+                  key={agent.title}
+                  className="soc-card rounded-xl p-6 flex flex-col justify-between hover-lift group"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`p-2.5 rounded-lg ${agent.bg}`}>
+                        <Icon className={`w-5 h-5 ${agent.color}`} />
+                      </div>
+                      <span className="text-[11px] font-mono text-muted-foreground px-2 py-0.5 rounded bg-secondary/80 border border-border">
+                        {agent.badge}
+                      </span>
+                    </div>
+                    <h3 className="text-base font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                      {agent.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {agent.description}
+                    </p>
+                  </div>
 
-        {/* Use Cases & Impact */}
-        <div className="max-w-6xl mx-auto py-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
-              Built For Those Fighting Misinformation
+                  <div className="pt-4 mt-4 border-t border-border/50 flex items-center justify-between text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1.5">
+                      <span className="flex h-1.5 w-1.5 rounded-full bg-success"></span>
+                      Status: Active
+                    </span>
+                    <span className="font-mono text-[11px]">99.8% uptime</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Use Cases Grid */}
+        <section className="container mx-auto px-4 sm:px-6 py-16 border-t border-border/50 max-w-6xl">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground mb-3">
+              Actionable Intelligence for Critical Defenders
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Providing actionable intelligence for rapid response and evidence-backed reporting
+            <p className="text-muted-foreground text-sm sm:text-base">
+              Designed specifically for organizations on the front lines of information integrity.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              {
-                icon: Users,
-                title: "Journalists & Newsrooms",
-                description: "Receive rapid alerts with traceable evidence chains. Investigate coordinated campaigns with forensic dossiers, network graphs, and media artifacts — all structured for fast verification.",
-              },
-              {
-                icon: Shield,
-                title: "Fact-Checking Organizations",
-                description: "Access structured incident reports with confidence scores, propagation timelines, and cluster analysis. Reduce time-to-verification with explainable AI outputs.",
-              },
-              {
-                icon: Globe,
-                title: "Social Media Platforms",
-                description: "Integrate via API for priority moderation signals. Receive coordinated network detections that help identify bot clusters and synthetic account operations.",
-              },
-              {
-                icon: AlertTriangle,
-                title: "Election & Public Safety Authorities",
-                description: "Gain situational awareness during crises. Track cross-platform campaigns, geographic hotspots, and narrative velocity with real-time heatmaps.",
-              },
-            ].map((useCase, idx) => (
-              <Card
-                key={useCase.title}
-                className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up card-interactive"
-                style={{ animationDelay: `${idx * 100}ms` }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-primary/10 border border-primary/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <useCase.icon className="w-6 h-6 text-primary" />
+            {targetAudiences.map((aud) => {
+              const Icon = aud.icon;
+              return (
+                <div key={aud.title} className="soc-card rounded-xl p-6 flex items-start gap-4">
+                  <div className="p-3 rounded-lg bg-primary/10 border border-primary/20 text-primary flex-shrink-0">
+                    <Icon className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2 text-foreground">{useCase.title}</h3>
-                    <p className="text-muted-foreground">{useCase.description}</p>
+                    <h3 className="text-base font-bold text-foreground mb-1.5">{aud.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{aud.description}</p>
                   </div>
                 </div>
-              </Card>
-            ))}
+              );
+            })}
           </div>
-        </div>
+        </section>
 
-        {/* Call to Action */}
-        <div className="max-w-4xl mx-auto text-center py-20">
-          <Card className="p-12 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary">
-              Early Detection. Evidence-Backed Reports. Autonomous Action.
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              Join the fight against coordinated misinformation. See the system in action.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                onClick={() => navigate('/dashboard')}
-                className="font-mono text-lg group hover-lift"
+        {/* Quick Testing & Forensics Bar */}
+        <section className="container mx-auto px-4 sm:px-6 py-12 border-t border-border/50 max-w-5xl">
+          <div className="p-6 rounded-xl bg-card/60 border border-border/70 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="space-y-1 text-center md:text-left">
+              <div className="text-sm font-bold text-foreground flex items-center justify-center md:justify-start gap-2">
+                <Terminal className="w-4 h-4 text-primary" />
+                Live Verification & Testing Suite
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Run immediate single-item visual tests, inspect Instagram hashtag streams, or view backend status.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-2.5">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => navigate("/url-analysis")}
+                className="text-xs font-medium"
               >
-                View Live Demo
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                URL Inspector
               </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                onClick={() => navigate('/auth')}
-                className="font-mono text-lg hover-lift"
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => navigate("/instagram-monitoring")}
+                className="text-xs font-medium"
               >
-                Request Access
+                Instagram Stream
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => navigate("/visual-test")}
+                className="text-xs font-medium"
+              >
+                ViT Forensics
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => navigate("/system-status")}
+                className="text-xs font-medium"
+              >
+                Diagnostics
               </Button>
             </div>
-          </Card>
-        </div>
-
-        {/* Development Tools Section */}
-        <div className="max-w-4xl mx-auto py-16 border-t">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold mb-4">Development & Testing Tools</h2>
-            <p className="text-muted-foreground">
-              Test our AI systems directly with these development interfaces
-            </p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="p-4 hover-lift cursor-pointer border-2 hover:border-primary/50 transition-colors">
-              <div onClick={() => navigate('/visual-test')} className="text-center space-y-2">
-                <Eye className="w-8 h-8 mx-auto text-primary" />
-                <h3 className="font-semibold">Visual Agent Test</h3>
-                <p className="text-sm text-muted-foreground">
-                  Test deepfake detection on images and videos
-                </p>
-              </div>
-            </Card>
-
-            <Card className="p-4 hover-lift cursor-pointer border-2 hover:border-primary/50 transition-colors">
-              <div onClick={() => navigate('/url-analysis')} className="text-center space-y-2">
-                <Globe className="w-8 h-8 mx-auto text-primary" />
-                <h3 className="font-semibold">URL Analysis</h3>
-                <p className="text-sm text-muted-foreground">
-                  Analyze social media URLs for deepfakes
-                </p>
-              </div>
-            </Card>
-
-            <Card className="p-4 hover-lift cursor-pointer border-2 hover:border-primary/50 transition-colors">
-              <div onClick={() => navigate('/agent-test')} className="text-center space-y-2">
-                <Brain className="w-8 h-8 mx-auto text-primary" />
-                <h3 className="font-semibold">Agent Testing</h3>
-                <p className="text-sm text-muted-foreground">
-                  Test all AI agents and coordination
-                </p>
-              </div>
-            </Card>
-          </div>
-        </div>
+        </section>
       </main>
+
+      {/* Production Footer */}
+      <footer className="border-t border-border/70 bg-card/40 py-8 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <Logo />
+            <span className="font-bold text-foreground">EchoBreaker Sentinel</span>
+            <span>— Mumbai Hacks 2025 Autonomous Defense Initiative</span>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <button onClick={() => navigate("/dashboard")} className="hover:text-primary transition-colors">
+              Dashboard
+            </button>
+            <button onClick={() => navigate("/incidents")} className="hover:text-primary transition-colors">
+              Incidents
+            </button>
+            <button onClick={() => navigate("/network")} className="hover:text-primary transition-colors">
+              Network Graph
+            </button>
+            <button onClick={() => navigate("/system-status")} className="hover:text-primary transition-colors">
+              System Telemetry
+            </button>
+          </div>
+        </div>
+      </footer>
     </div>
   );
-};
-
-export default Landing;
+}

@@ -1,263 +1,326 @@
-import { HeroSection } from "@/components/HeroSection";
+import { useState } from "react";
+import { AppLayout } from "@/components/layout/AppLayout";
 import { MonitoringDashboard } from "@/components/MonitoringDashboard";
 import { NetworkGraph } from "@/components/NetworkGraph";
 import { ThreatFeed } from "@/components/ThreatFeed";
 import { PlatformStatus } from "@/components/PlatformStatus";
 import { StatsOverview } from "@/components/StatsOverview";
-import { DemoBanner } from "@/components/DemoBanner";
-import { LastUpdated } from "@/components/LastUpdated";
 import { LiveDetectionFeed } from "@/components/LiveDetectionFeed";
-import { HumanReviewInterface } from "@/components/HumanReviewInterface";
 import { AgentCommunicationViz } from "@/components/AgentCommunicationViz";
 import { EnhancedDashboardOverview } from "@/components/EnhancedDashboardOverview";
 import { Button } from "@/components/ui/button";
-import { Logo } from "@/components/Logo";
-import { LogOut, UserCheck, Instagram } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import { 
+  Instagram, 
+  Globe, 
+  Video, 
+  Database, 
+  Cpu, 
+  BookOpen, 
+  Activity, 
+  Terminal, 
+  Sparkles,
+  ExternalLink,
+  ShieldCheck,
+  Zap
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const Dashboard = () => {
+export default function Dashboard() {
   const navigate = useNavigate();
-  const [isReviewOpen, setIsReviewOpen] = useState(false);
 
   return (
-    <div className="min-h-screen relative">
-      <DemoBanner />
-      
-      {/* Ambient Background Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-glow" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }} />
-      </div>
-
-      {/* Header */}
-      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50 mt-12">
-        <nav className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 cursor-pointer hover-lift" onClick={() => navigate('/dashboard')}>
-              <Logo />
-              <span className="text-2xl font-bold font-mono text-primary">EchoBreaker</span>
-            </div>
-            <div className="flex gap-4">
-              <Button variant="default" className="font-mono hover-lift">
-                Dashboard
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/analytics')} className="font-mono hover-glow">
-                Analytics
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/agents')} className="font-mono hover-glow">
-                Agents
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/network')} className="font-mono hover-glow">
-                Network
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono hover-glow">
-                Incidents
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono hover-glow">
-                Alerts
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/instagram-monitoring')} className="font-mono hover-glow">
-                Instagram
-              </Button>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <LastUpdated />
-            <Button 
-              variant="default" 
-              onClick={() => setIsReviewOpen(true)}
-              className="font-mono hover-lift bg-orange-600 hover:bg-orange-700"
-            >
-              <UserCheck className="w-4 h-4 mr-2" />
-              Review Queue (5)
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/')}
-              className="font-mono hover-lift"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
-          </div>
-        </nav>
-      </header>
-
-      <div className="relative z-10">
-        {/* Human Review Interface */}
-        <HumanReviewInterface 
-          isOpen={isReviewOpen}
-          onClose={() => setIsReviewOpen(false)}
-        />
-
-        {/* Main Dashboard Content with Tabs */}
-        <div className="container mx-auto px-4 py-8">
-          <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="overview" className="text-lg">🚀 Phase 1 Overview</TabsTrigger>
-              <TabsTrigger value="monitoring" className="text-lg">📊 Live Monitoring</TabsTrigger>
-              <TabsTrigger value="dev-tools" className="text-lg">🔧 Dev Tools</TabsTrigger>
+    <AppLayout
+      title="Sentinel Threat Intelligence SOC"
+      subtitle="Autonomous multimodal detection, propagation mapping, and live incident mitigation"
+      actions={
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="font-mono text-xs text-primary border-primary/30 py-1 px-2.5">
+            <span className="w-2 h-2 rounded-full bg-success mr-2 animate-pulse"></span>
+            SOC Status: Operational
+          </Badge>
+          <Button
+            size="sm"
+            onClick={() => navigate("/incidents")}
+            className="text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 mr-1.5" />
+            Active Incidents
+          </Button>
+        </div>
+      }
+    >
+      <div className="space-y-6">
+        {/* Main Dashboard Navigation Tabs */}
+        <Tabs defaultValue="overview" className="w-full">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <TabsList className="grid grid-cols-3 w-full sm:w-[480px] bg-secondary/60 border border-border/70 p-1">
+              <TabsTrigger value="overview" className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                Executive Overview
+              </TabsTrigger>
+              <TabsTrigger value="monitoring" className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                Live Sentinel Feed
+              </TabsTrigger>
+              <TabsTrigger value="dev-tools" className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                Forensics & Tools
+              </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="overview" className="space-y-8">
-              <EnhancedDashboardOverview />
-            </TabsContent>
+            <div className="hidden lg:flex items-center gap-2 text-xs text-muted-foreground font-mono">
+              <span className="px-2 py-0.5 rounded bg-muted/60 border border-border/50">Model: ViT-B/16 + Whisper</span>
+              <span className="px-2 py-0.5 rounded bg-muted/60 border border-border/50">Cluster Engine: GNN-GraphSAGE</span>
+            </div>
+          </div>
 
-            <TabsContent value="monitoring" className="space-y-8">
-              <StatsOverview />
-              <LiveDetectionFeed />
-              
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2">
-                  <MonitoringDashboard />
-                </div>
+          {/* Tab 1: Executive Overview */}
+          <TabsContent value="overview" className="space-y-6 outline-none">
+            <EnhancedDashboardOverview />
+          </TabsContent>
+
+          {/* Tab 2: Live Monitoring */}
+          <TabsContent value="monitoring" className="space-y-6 outline-none">
+            <StatsOverview />
+            <LiveDetectionFeed />
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <MonitoringDashboard />
+              </div>
+              <div>
+                <ThreatFeed />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <NetworkGraph />
+              <PlatformStatus />
+            </div>
+
+            {/* Agent Communication Graph */}
+            <AgentCommunicationViz />
+          </TabsContent>
+
+          {/* Tab 3: Development & Testing Tools */}
+          <TabsContent value="dev-tools" className="space-y-6 outline-none">
+            <div className="p-6 rounded-xl bg-card/60 border border-border/70 backdrop-blur-sm space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/60">
                 <div>
-                  <ThreatFeed />
+                  <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                    <Terminal className="w-5 h-5 text-primary" />
+                    Forensic Verification & Diagnostics Suite
+                  </h2>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+                    Direct access to multimodal test harnesses, scrapers, model endpoints, and database inspectors
+                  </p>
                 </div>
-              </div>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <NetworkGraph />
-                <PlatformStatus />
+                <Badge variant="outline" className="w-fit text-xs font-mono text-primary border-primary/30">
+                  Dev Environment
+                </Badge>
               </div>
 
-              {/* Agent Communication Visualization */}
-              <AgentCommunicationViz />
-            </TabsContent>
-
-            <TabsContent value="dev-tools" className="space-y-8">
-              {/* Development & Testing Tools */}
-              <div className="bg-gradient-to-br from-card/30 to-card/50 border border-border/30 rounded-lg p-8">
-                <h2 className="text-3xl font-bold text-center mb-6 gradient-text">🚀 Development & Testing Tools</h2>
-                <p className="text-center text-muted-foreground mb-6">Quick access to all testing capabilities and system monitoring</p>
-              
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {/* Instagram Monitoring - NEW Phase 1 Feature! */}
-                  <Button
-                    onClick={() => navigate('/instagram-monitoring')}
-                    className="h-24 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white border-0 hover-lift relative"
-                  >
-                    <div className="absolute top-1 right-1 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                      NEW!
+              {/* Forensic & Monitoring Tools Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Instagram Monitoring */}
+                <div
+                  onClick={() => navigate("/instagram-monitoring")}
+                  className="soc-card rounded-xl p-5 cursor-pointer hover-lift flex flex-col justify-between group"
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="p-2 rounded-lg bg-pink-500/10 text-pink-400 border border-pink-500/20">
+                        <Instagram className="w-5 h-5" />
+                      </div>
+                      <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/30 text-[10px]">
+                        Phase 1 Ready
+                      </Badge>
                     </div>
-                    <Instagram className="w-6 h-6" />
-                    <span className="text-lg font-bold">Instagram Monitor</span>
-                    <span className="text-sm opacity-90">Auto Hashtag Detection</span>
-                  </Button>
-
-                  {/* URL Analysis */}
-                  <Button
-                    onClick={() => navigate('/url-analysis')}
-                    className="h-24 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 hover-lift"
-                  >
-                    <span className="text-lg font-bold">🎬 URL Analysis</span>
-                    <span className="text-sm opacity-90">Social Media Deepfake Detection</span>
-                  </Button>
-
-                  {/* Video Testing */}
-                  <Button
-                    onClick={() => navigate('/visual-test')}
-                    className="h-24 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white border-0 hover-lift"
-                  >
-                    <span className="text-lg font-bold">🎥 Video Testing</span>
-                    <span className="text-sm opacity-90">Visual Analysis Agent</span>
-                  </Button>
-
-                  {/* Database Testing */}
-                  <Button
-                    onClick={() => navigate('/db-test')}
-                    className="h-24 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white border-0 hover-lift"
-                  >
-                    <span className="text-lg font-bold">🗄️ Database Test</span>
-                    <span className="text-sm opacity-90">Supabase Integration</span>
-                  </Button>
-
-                  {/* Agent Testing */}
-                  <Button
-                    onClick={() => navigate('/agent-test')}
-                    className="h-24 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white border-0 hover-lift"
-                  >
-                    <span className="text-lg font-bold">🤖 Agent Test</span>
-                    <span className="text-sm opacity-90">Agent Communication</span>
-                  </Button>
-
-                  {/* Backend API Documentation */}
-                  <Button
-                    onClick={() => window.open('http://localhost:8001/docs', '_blank')}
-                    className="h-24 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white border-0 hover-lift"
-                  >
-                    <span className="text-lg font-bold">📚 API Docs</span>
-                    <span className="text-sm opacity-90">FastAPI Documentation</span>
-                  </Button>
-
-                  {/* Backend Health Check */}
-                  <Button
-                    onClick={() => window.open('http://localhost:8001/api/models', '_blank')}
-                    className="h-24 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white border-0 hover-lift"
-                  >
-                    <span className="text-lg font-bold">⚡ Backend Status</span>
-                    <span className="text-sm opacity-90">Models & Health Check</span>
-                  </Button>
-
-                  {/* System Status Dashboard */}
-                  <Button
-                    onClick={() => navigate('/system-status')}
-                    className="h-24 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white border-0 hover-lift"
-                  >
-                    <span className="text-lg font-bold">📊 System Status</span>
-                    <span className="text-sm opacity-90">All Endpoints & Tools</span>
-                  </Button>
+                    <div>
+                      <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+                        Instagram Live Monitor
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Automated hashtag polling, synthetic media scanner & instant incident filing.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-3 mt-3 border-t border-border/40 text-[11px] text-primary flex items-center gap-1 font-medium">
+                    Open Inspector →
+                  </div>
                 </div>
 
-                {/* Additional Quick Actions */}
-                <div className="mt-6 p-4 bg-card/50 rounded-lg border border-border/50">
-                  <h3 className="font-semibold mb-3">Quick Actions</h3>
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      onClick={() => window.open('http://localhost:8001/redoc', '_blank')}
-                      variant="outline"
-                      size="sm"
-                      className="hover-glow"
-                    >
-                      📖 ReDoc API
-                    </Button>
-                    <Button
-                      onClick={() => navigate('/settings')}
-                      variant="outline"
-                      size="sm"
-                      className="hover-glow"
-                    >
-                      ⚙️ Settings
-                    </Button>
-                    <Button
-                      onClick={() => window.open('https://github.com/aaryan2720/echo-sentinel-agent', '_blank')}
-                      variant="outline"
-                      size="sm"
-                      className="hover-glow"
-                    >
-                      🐙 GitHub Repo
-                    </Button>
-                    <Button
-                      onClick={() => window.open('http://localhost:5173', '_blank')}
-                      variant="outline"
-                      size="sm"
-                      className="hover-glow"
-                    >
-                      🏠 Landing Page
-                    </Button>
+                {/* URL Analysis */}
+                <div
+                  onClick={() => navigate("/url-analysis")}
+                  className="soc-card rounded-xl p-5 cursor-pointer hover-lift flex flex-col justify-between group"
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                        <Globe className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] font-mono text-muted-foreground">yt-dlp Engine</span>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+                        Social URL Forensics
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Extract media streams from YouTube, X, TikTok and test deepfake authenticity.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-3 mt-3 border-t border-border/40 text-[11px] text-primary flex items-center gap-1 font-medium">
+                    Analyze URL →
+                  </div>
+                </div>
+
+                {/* Visual Testing */}
+                <div
+                  onClick={() => navigate("/visual-test")}
+                  className="soc-card rounded-xl p-5 cursor-pointer hover-lift flex flex-col justify-between group"
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                        <Video className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] font-mono text-muted-foreground">Frame Analysis</span>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+                        ViT Deepfake Forensics
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Frame-by-frame visual manipulation artifacts and temporal coherence inspector.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-3 mt-3 border-t border-border/40 text-[11px] text-primary flex items-center gap-1 font-medium">
+                    Test Video →
+                  </div>
+                </div>
+
+                {/* Database Testing */}
+                <div
+                  onClick={() => navigate("/db-test")}
+                  className="soc-card rounded-xl p-5 cursor-pointer hover-lift flex flex-col justify-between group"
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <Database className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] font-mono text-muted-foreground">Supabase</span>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+                        Database Telemetry
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Validate schemas, inspect incidents table, query agent logs, and seed mock data.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-3 mt-3 border-t border-border/40 text-[11px] text-primary flex items-center gap-1 font-medium">
+                    View Tables →
+                  </div>
+                </div>
+
+                {/* Agent Communication Testing */}
+                <div
+                  onClick={() => navigate("/agent-test")}
+                  className="soc-card rounded-xl p-5 cursor-pointer hover-lift flex flex-col justify-between group"
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        <Cpu className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] font-mono text-muted-foreground">Bus Inspector</span>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+                        Multi-Agent Testing
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Simulate message pass between monitoring, detector, attribution, and reporting agents.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-3 mt-3 border-t border-border/40 text-[11px] text-primary flex items-center gap-1 font-medium">
+                    Run Simulation →
+                  </div>
+                </div>
+
+                {/* System Status Dashboard */}
+                <div
+                  onClick={() => navigate("/system-status")}
+                  className="soc-card rounded-xl p-5 cursor-pointer hover-lift flex flex-col justify-between group"
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                        <Activity className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] font-mono text-muted-foreground">Endpoints</span>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+                        System Health & Latency
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Comprehensive ping dashboard across API routes, ML models, and storage endpoints.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-3 mt-3 border-t border-border/40 text-[11px] text-primary flex items-center gap-1 font-medium">
+                    Ping Services →
                   </div>
                 </div>
               </div>
-            </TabsContent>
-          </Tabs>
-        </div>
+
+              {/* Quick Documentation & External Actions */}
+              <div className="p-4 rounded-lg bg-background/50 border border-border/60 flex flex-wrap items-center justify-between gap-3">
+                <div className="text-xs text-muted-foreground">
+                  Need raw API specifications or model inference documentation?
+                </div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Button
+                    onClick={() => window.open("http://localhost:8001/docs", "_blank")}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs gap-1.5"
+                  >
+                    <BookOpen className="w-3.5 h-3.5" />
+                    Swagger OpenAPI
+                    <ExternalLink className="w-3 h-3 opacity-60" />
+                  </Button>
+                  <Button
+                    onClick={() => window.open("http://localhost:8001/redoc", "_blank")}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs gap-1.5"
+                  >
+                    <BookOpen className="w-3.5 h-3.5" />
+                    ReDoc API
+                    <ExternalLink className="w-3 h-3 opacity-60" />
+                  </Button>
+                  <Button
+                    onClick={() => navigate("/settings")}
+                    variant="secondary"
+                    size="sm"
+                    className="text-xs gap-1.5"
+                  >
+                    Config Settings
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
-    </div>
+    </AppLayout>
   );
-};
-
-
-
-export default Dashboard;
+}

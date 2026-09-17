@@ -1,23 +1,33 @@
-import { Card } from "@/components/ui/card";
+import { useState } from "react";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Logo } from "@/components/Logo";
-import { DemoBanner } from "@/components/DemoBanner";
-import { LastUpdated } from "@/components/LastUpdated";
 import { InteractiveNetworkGraph } from "@/components/InteractiveNetworkGraph";
-import { LogOut, Network as NetworkIcon, Users, Share2 } from "lucide-react";
+import { 
+  Network as NetworkIcon, 
+  Users, 
+  Share2, 
+  Download, 
+  ShieldAlert, 
+  Layers, 
+  Sparkles,
+  Info,
+  Radio
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "@/hooks/use-notification";
 
-const Network = () => {
+export default function Network() {
   const navigate = useNavigate();
   const { showSuccess, showInfo } = useNotification();
+  const [selectedCluster, setSelectedCluster] = useState<number | null>(null);
 
   const handleExportNetwork = (clusterId: number, clusterName: string) => {
-    showInfo("Export Started", `Exporting network graph for ${clusterName}...`);
+    showInfo("Export Started", `Exporting GNN topology data for "${clusterName}"...`);
     setTimeout(() => {
-      showSuccess("Export Complete", "Network topology data exported successfully.");
-    }, 1500);
+      showSuccess("Export Complete", "Network topology JSON & Gephi format exported.");
+    }, 1200);
   };
 
   const clusters = [
@@ -28,6 +38,9 @@ const Network = () => {
       posts: 3421,
       reach: "2.4M",
       threat: "critical",
+      density: "0.84",
+      platforms: ["X", "Telegram"],
+      syncScore: "94%",
     },
     {
       id: 2,
@@ -36,6 +49,9 @@ const Network = () => {
       posts: 1567,
       reach: "890K",
       threat: "high",
+      density: "0.72",
+      platforms: ["WhatsApp", "Telegram"],
+      syncScore: "89%",
     },
     {
       id: 3,
@@ -44,6 +60,9 @@ const Network = () => {
       posts: 5678,
       reach: "4.1M",
       threat: "critical",
+      density: "0.91",
+      platforms: ["X", "Reddit", "Facebook"],
+      syncScore: "96%",
     },
     {
       id: 4,
@@ -52,151 +71,175 @@ const Network = () => {
       posts: 2134,
       reach: "1.2M",
       threat: "medium",
+      density: "0.65",
+      platforms: ["Instagram", "TikTok"],
+      syncScore: "78%",
     },
   ];
 
   return (
-    <div className="min-h-screen relative">
-      <DemoBanner />
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-glow" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }} />
-      </div>
-
-      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50 mt-12">
-        <nav className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
-              <Logo />
-              <span className="text-2xl font-bold font-mono text-primary">EchoBreaker</span>
-            </div>
-            <div className="flex gap-4">
-              <Button variant="ghost" onClick={() => navigate('/dashboard')} className="font-mono hover-lift">
-                Dashboard
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/analytics')} className="font-mono hover-lift">
-                Analytics
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/agents')} className="font-mono hover-lift">
-                Agents
-              </Button>
-              <Button variant="default" className="font-mono hover-glow">
-                Network
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono hover-lift">
-                Incidents
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono hover-lift">
-                Alerts
-              </Button>
-            </div>
-          </div>
-          <Button variant="outline" onClick={() => navigate('/')} className="font-mono">
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
+    <AppLayout
+      title="Graph Neural Network Analysis"
+      subtitle="Coordinated propagation network topology, synchronized account clusters, and origin seed attribution"
+      actions={
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="font-mono text-xs text-primary border-primary/30 py-1 px-2.5">
+            <Radio className="w-3 h-3 text-primary mr-1.5 animate-pulse" />
+            Live GNN Topology
+          </Badge>
+          <Button
+            size="sm"
+            onClick={() => handleExportNetwork(0, "All Clusters")}
+            className="text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+          >
+            <Download className="w-3.5 h-3.5 mr-1.5" />
+            Export Graph Topology
           </Button>
-        </nav>
-      </header>
-
-      <div className="relative z-10 container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-4xl font-bold mb-2 font-mono text-primary">
-                Network Analysis
-              </h1>
-              <p className="text-muted-foreground">Coordinated influence operations and bot networks</p>
-            </div>
-            <LastUpdated />
-          </div>
         </div>
-
-        {/* Large Network Graph */}
-        <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 mb-6 card-interactive">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <NetworkIcon className="w-5 h-5 text-primary" />
-              <h2 className="text-xl font-bold text-primary font-mono">
-                Interactive Network Graph
-              </h2>
+      }
+    >
+      <div className="space-y-6">
+        {/* Interactive Network Graph Card */}
+        <div className="soc-card rounded-xl p-6 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/50">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                <NetworkIcon className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-foreground">
+                  Interactive Propagation Topology
+                </h2>
+                <p className="text-xs text-muted-foreground">
+                  Drag nodes to inspect clustering, synchronized message bursts, and core bot hubs
+                </p>
+              </div>
             </div>
-            <Badge variant="outline" className="font-mono">
-              23 Nodes • 31 Connections
-            </Badge>
+
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="font-mono text-[11px] text-muted-foreground">
+                23 Nodes • 31 Directed Edges
+              </Badge>
+              <Badge className="bg-destructive/20 text-destructive border-destructive/30 text-[10px] font-mono uppercase">
+                2 Critical Clusters
+              </Badge>
+            </div>
           </div>
 
           <InteractiveNetworkGraph />
-        </Card>
+        </div>
 
-        {/* Cluster Details */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {clusters.map((cluster, idx) => (
-            <Card
-              key={cluster.id}
-              className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 animate-fade-in-up card-interactive"
-              style={{ animationDelay: `${idx * 100}ms` }}
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-start gap-3">
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center border ${
-                    cluster.threat === 'critical' 
-                      ? 'bg-destructive/10 border-destructive/30' 
-                      : cluster.threat === 'high'
-                      ? 'bg-warning/10 border-warning/30'
-                      : 'bg-primary/10 border-primary/30'
-                  }`}>
-                    <Users className={`w-6 h-6 ${
-                      cluster.threat === 'critical' 
-                        ? 'text-destructive' 
-                        : cluster.threat === 'high'
-                        ? 'text-warning'
-                        : 'text-primary'
-                    }`} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-foreground mb-1">{cluster.name}</h3>
-                    <p className="text-sm text-muted-foreground font-mono">
-                      Network ID: #{cluster.id}
-                    </p>
-                  </div>
-                </div>
-                <Badge
-                  variant={cluster.threat === 'critical' ? 'destructive' : cluster.threat === 'high' ? 'default' : 'outline'}
-                  className="font-mono"
+        {/* Identified Coordinated Clusters Section */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                Detected Coordinated Clusters ({clusters.length})
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Ranked by narrative velocity, synchronization density score, and cross-platform reach
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {clusters.map((cluster) => {
+              const isCritical = cluster.threat === "critical";
+              const isHigh = cluster.threat === "high";
+
+              return (
+                <div
+                  key={cluster.id}
+                  className={`soc-card rounded-xl p-5 flex flex-col justify-between hover-lift transition-all ${
+                    selectedCluster === cluster.id ? "soc-card-active" : ""
+                  }`}
+                  onClick={() => setSelectedCluster(cluster.id)}
                 >
-                  {cluster.threat}
-                </Badge>
-              </div>
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <div
+                          className={`p-2.5 rounded-lg border flex-shrink-0 ${
+                            isCritical
+                              ? "bg-destructive/10 border-destructive/30 text-destructive"
+                              : isHigh
+                              ? "bg-warning/10 border-warning/30 text-warning"
+                              : "bg-primary/10 border-primary/30 text-primary"
+                          }`}
+                        >
+                          <Users className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-secondary/80 text-muted-foreground border border-border">
+                              #{cluster.id}
+                            </span>
+                            <h3 className="text-sm font-bold text-foreground">
+                              {cluster.name}
+                            </h3>
+                          </div>
+                          <p className="text-[11px] text-muted-foreground mt-0.5">
+                            Platforms: {cluster.platforms.join(", ")}
+                          </p>
+                        </div>
+                      </div>
 
-              <div className="grid grid-cols-3 gap-3">
-                <div className="p-3 bg-background/50 rounded-lg">
-                  <p className="text-xs text-muted-foreground font-mono mb-1">Accounts</p>
-                  <p className="text-lg font-bold text-foreground">{cluster.accounts}</p>
-                </div>
-                <div className="p-3 bg-background/50 rounded-lg">
-                  <p className="text-xs text-muted-foreground font-mono mb-1">Posts</p>
-                  <p className="text-lg font-bold text-primary">{cluster.posts}</p>
-                </div>
-                <div className="p-3 bg-background/50 rounded-lg">
-                  <p className="text-xs text-muted-foreground font-mono mb-1">Reach</p>
-                  <p className="text-lg font-bold text-accent">{cluster.reach}</p>
-                </div>
-              </div>
+                      <Badge
+                        variant={isCritical ? "destructive" : isHigh ? "default" : "outline"}
+                        className={`text-[10px] font-mono uppercase ${
+                          isHigh ? "bg-orange-500/20 text-orange-400 border-orange-500/30" : ""
+                        }`}
+                      >
+                        {cluster.threat}
+                      </Badge>
+                    </div>
 
-              <Button 
-                variant="outline" 
-                className="w-full mt-4 font-mono hover-lift"
-                onClick={() => handleExportNetwork(cluster.id, cluster.name)}
-              >
-                <Share2 className="w-4 h-4 mr-2" />
-                Export Network
-              </Button>
-            </Card>
-          ))}
+                    {/* Metrics Grid */}
+                    <div className="grid grid-cols-4 gap-2 p-2.5 rounded-lg bg-secondary/40 border border-border/50 text-xs">
+                      <div>
+                        <div className="text-[10px] text-muted-foreground font-mono">Accounts</div>
+                        <div className="font-bold font-data text-foreground mt-0.5">{cluster.accounts}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-muted-foreground font-mono">Posts</div>
+                        <div className="font-bold font-data text-primary mt-0.5">{cluster.posts}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-muted-foreground font-mono">Reach</div>
+                        <div className="font-bold font-data text-accent mt-0.5">{cluster.reach}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-muted-foreground font-mono">Sync Rate</div>
+                        <div className="font-bold font-data text-success mt-0.5">{cluster.syncScore}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="pt-3 mt-3 border-t border-border/40 flex items-center justify-between">
+                    <span className="text-[11px] font-mono text-muted-foreground">
+                      Graph Density: {cluster.density}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-7 gap-1 border-border hover:bg-secondary/60"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleExportNetwork(cluster.id, cluster.name);
+                      }}
+                    >
+                      <Share2 className="w-3 h-3" />
+                      Export Cluster
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
+    </AppLayout>
   );
-};
-
-export default Network;
+}

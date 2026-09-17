@@ -1,233 +1,297 @@
-import { Card } from "@/components/ui/card";
+import { useState } from "react";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Logo } from "@/components/Logo";
-import { DemoBanner } from "@/components/DemoBanner";
-import { LastUpdated } from "@/components/LastUpdated";
-import { LogOut, Settings as SettingsIcon, Bell, Shield, Database, Webhook } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Settings as SettingsIcon, 
+  Bell, 
+  Shield, 
+  Database, 
+  Webhook, 
+  Save, 
+  RotateCcw,
+  Sliders,
+  Radio,
+  CheckCircle2,
+  Key
+} from "lucide-react";
 import { useNotification } from "@/hooks/use-notification";
 
-const Settings = () => {
-  const navigate = useNavigate();
-  const { showSuccess } = useNotification();
+export default function Settings() {
+  const { showSuccess, showInfo } = useNotification();
+  const [criticalAlerts, setCriticalAlerts] = useState(true);
+  const [emailAlerts, setEmailAlerts] = useState(true);
+  const [confidenceThreshold, setConfidenceThreshold] = useState("85");
+  const [coordinationThreshold, setCoordinationThreshold] = useState("75");
+  const [webhookUrl, setWebhookUrl] = useState("https://api.newsroom-dispatch.org/v1/alerts");
+  const [webhookSecret, setWebhookSecret] = useState("whsec_98f418d220_sentinel");
+
+  const [connectors, setConnectors] = useState([
+    { name: "X (Twitter) v2 Stream", status: "Active", enabled: true },
+    { name: "Telegram Bot Broadcasts", status: "Active", enabled: true },
+    { name: "YouTube RSS & Shorts Ingest", status: "Active", enabled: true },
+    { name: "Reddit Crisis Subreddits", status: "Active", enabled: true },
+    { name: "TikTok Viral Scraper", status: "Active", enabled: true },
+    { name: "Meta / Instagram Graph API", status: "Active", enabled: true },
+  ]);
+
+  const toggleConnector = (index: number) => {
+    setConnectors(prev => prev.map((c, i) => i === index ? { ...c, enabled: !c.enabled } : c));
+  };
 
   const handleSaveSettings = () => {
-    showSuccess("Settings Saved", "Your configuration has been updated successfully.");
+    showSuccess("Configuration Saved", "Sentinel SOC thresholds and connector rules updated.");
+  };
+
+  const handleTestWebhook = () => {
+    showInfo("Webhook Test", "Dispatching test mock incident dossier to endpoint...");
+    setTimeout(() => {
+      showSuccess("Webhook Delivered", "HTTP 200 OK received from target endpoint.");
+    }, 1000);
+  };
+
+  const handleResetDefaults = () => {
+    setConfidenceThreshold("85");
+    setCoordinationThreshold("75");
+    setCriticalAlerts(true);
+    setEmailAlerts(true);
+    showInfo("Reset", "Restored default Sentinel SOC parameters.");
   };
 
   return (
-    <div className="min-h-screen relative">
-      <DemoBanner />
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-glow" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }} />
-      </div>
-
-      <header className="relative z-10 container mx-auto px-4 py-4 border-b border-border/50 mt-12">
-        <nav className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
-              <Logo />
-              <span className="text-2xl font-bold font-mono text-primary">EchoBreaker</span>
-            </div>
-            <div className="flex gap-4">
-              <Button variant="ghost" onClick={() => navigate('/dashboard')} className="font-mono hover-lift">
-                Dashboard
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/analytics')} className="font-mono hover-lift">
-                Analytics
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/agents')} className="font-mono hover-lift">
-                Agents
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/network')} className="font-mono hover-lift">
-                Network
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/incidents')} className="font-mono hover-lift">
-                Incidents
-              </Button>
-              <Button variant="ghost" onClick={() => navigate('/alerts')} className="font-mono hover-lift">
-                Alerts
-              </Button>
-            </div>
-          </div>
-          <Button variant="outline" onClick={() => navigate('/')} className="font-mono">
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
+    <AppLayout
+      title="System Configuration & Rules"
+      subtitle="Tune multimodal detection sensitivity, automated incident thresholds, webhook dispatches, and platform connectors"
+      maxWidth="narrow"
+      actions={
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            onClick={handleSaveSettings}
+            className="text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5"
+          >
+            <Save className="w-3.5 h-3.5" />
+            Save Configuration
           </Button>
-        </nav>
-      </header>
-
-      <div className="relative z-10 container mx-auto px-4 py-8 max-w-4xl">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold mb-2 font-mono text-primary">
-              Settings & Configuration
-            </h1>
-            <p className="text-muted-foreground">Configure system behavior, integrations, and alert thresholds</p>
+        </div>
+      }
+    >
+      <div className="space-y-6">
+        {/* Detection Thresholds Card */}
+        <div className="soc-card rounded-xl p-6 space-y-5">
+          <div className="flex items-center gap-3 pb-3 border-b border-border/50">
+            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <Shield className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-foreground">
+                Model Inference & Sensitivity Thresholds
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Adjust confidence cutoffs required to escalate detected signals into verified incidents
+              </p>
+            </div>
           </div>
-          <LastUpdated />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <Label htmlFor="deepfake-threshold" className="font-medium text-foreground">
+                  Deepfake Detection Cutoff
+                </Label>
+                <span className="font-mono font-bold text-primary">{confidenceThreshold}%</span>
+              </div>
+              <Input
+                id="deepfake-threshold"
+                type="range"
+                min="50"
+                max="99"
+                value={confidenceThreshold}
+                onChange={(e) => setConfidenceThreshold(e.target.value)}
+                className="h-2 bg-secondary cursor-pointer accent-primary"
+              />
+              <p className="text-[11px] text-muted-foreground">
+                Detections below {confidenceThreshold}% are routed to passive background monitoring.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <Label htmlFor="coordination-threshold" className="font-medium text-foreground">
+                  GNN Coordination Threshold
+                </Label>
+                <span className="font-mono font-bold text-accent">{coordinationThreshold}%</span>
+              </div>
+              <Input
+                id="coordination-threshold"
+                type="range"
+                min="50"
+                max="99"
+                value={coordinationThreshold}
+                onChange={(e) => setCoordinationThreshold(e.target.value)}
+                className="h-2 bg-secondary cursor-pointer accent-accent"
+              />
+              <p className="text-[11px] text-muted-foreground">
+                Synchronized posting score required to flag a coordinated bot cluster.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="space-y-6">
-          {/* Alert Configuration */}
-          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
-            <div className="flex items-center gap-3 mb-6">
-              <Bell className="w-6 h-6 text-primary" />
-              <h2 className="text-2xl font-bold text-foreground font-mono">Alert Configuration</h2>
+        {/* Alert Notifications Card */}
+        <div className="soc-card rounded-xl p-6 space-y-5">
+          <div className="flex items-center gap-3 pb-3 border-b border-border/50">
+            <div className="p-2 rounded-lg bg-warning/10 text-warning">
+              <Bell className="w-5 h-5" />
             </div>
+            <div>
+              <h3 className="text-base font-bold text-foreground">
+                Escalation & Notification Channels
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Configure immediate alert triggers for SOC duty engineers and editors
+              </p>
+            </div>
+          </div>
 
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <Label htmlFor="critical-alerts" className="font-mono">Critical Alerts</Label>
-                  <p className="text-sm text-muted-foreground">Receive notifications for critical threats</p>
+          <div className="space-y-4 text-xs">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/40 border border-border/50">
+              <div className="space-y-0.5">
+                <div className="font-medium text-foreground">Critical Severity Surge Alerts</div>
+                <div className="text-[11px] text-muted-foreground">
+                  Immediate browser push and high-priority banner notifications
                 </div>
-                <Switch id="critical-alerts" defaultChecked />
               </div>
+              <Switch checked={criticalAlerts} onCheckedChange={setCriticalAlerts} />
+            </div>
 
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <Label htmlFor="email-alerts" className="font-mono">Email Notifications</Label>
-                  <p className="text-sm text-muted-foreground">Send alerts via email</p>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/40 border border-border/50">
+              <div className="space-y-0.5">
+                <div className="font-medium text-foreground">Newsroom Email Digest Dispatch</div>
+                <div className="text-[11px] text-muted-foreground">
+                  Send hourly summary dossiers of new incidents to fact-checking partners
                 </div>
-                <Switch id="email-alerts" defaultChecked />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="alert-threshold" className="font-mono">Alert Threshold</Label>
-                <Input
-                  id="alert-threshold"
-                  type="number"
-                  placeholder="85"
-                  defaultValue="85"
-                  className="font-mono"
-                />
-                <p className="text-sm text-muted-foreground">Minimum confidence score (0-100) to trigger alerts</p>
-              </div>
+              <Switch checked={emailAlerts} onCheckedChange={setEmailAlerts} />
             </div>
-          </Card>
+          </div>
+        </div>
 
-          {/* Platform Connectors */}
-          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
-            <div className="flex items-center gap-3 mb-6">
-              <Database className="w-6 h-6 text-primary" />
-              <h2 className="text-2xl font-bold text-foreground font-mono">Platform Connectors</h2>
+        {/* Platform Ingestion Connectors */}
+        <div className="soc-card rounded-xl p-6 space-y-5">
+          <div className="flex items-center gap-3 pb-3 border-b border-border/50">
+            <div className="p-2 rounded-lg bg-accent/10 text-accent">
+              <Database className="w-5 h-5" />
             </div>
+            <div>
+              <h3 className="text-base font-bold text-foreground">
+                Active Social Ingestion Connectors
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Manage autonomous streaming crawlers across supported digital networks
+              </p>
+            </div>
+          </div>
 
-            <div className="space-y-4">
-              {['X (Twitter)', 'YouTube', 'Telegram', 'Reddit', 'Facebook'].map((platform) => (
-                <div key={platform} className="flex items-center justify-between p-4 bg-background/50 rounded-lg">
-                  <div>
-                    <p className="font-semibold text-foreground font-mono">{platform}</p>
-                    <p className="text-sm text-muted-foreground">Status: Active</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            {connectors.map((c, idx) => (
+              <div
+                key={c.name}
+                className="p-3.5 rounded-lg bg-secondary/40 border border-border/50 flex items-center justify-between"
+              >
+                <div>
+                  <div className="font-medium text-foreground">{c.name}</div>
+                  <div className="text-[11px] text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                    <span className={`w-1.5 h-1.5 rounded-full ${c.enabled ? "bg-success" : "bg-muted-foreground"}`}></span>
+                    {c.enabled ? "Streaming Active" : "Paused"}
                   </div>
-                  <Switch defaultChecked />
                 </div>
-              ))}
-            </div>
-          </Card>
-
-          {/* Webhook Integration */}
-          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
-            <div className="flex items-center gap-3 mb-6">
-              <Webhook className="w-6 h-6 text-primary" />
-              <h2 className="text-2xl font-bold text-foreground font-mono">Webhook Integration</h2>
-            </div>
-
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="webhook-url" className="font-mono">Webhook URL</Label>
-                <Input
-                  id="webhook-url"
-                  type="url"
-                  placeholder="https://your-service.com/webhook"
-                  className="font-mono"
-                />
-                <p className="text-sm text-muted-foreground">Receive real-time alerts via webhook</p>
+                <Switch checked={c.enabled} onCheckedChange={() => toggleConnector(idx)} />
               </div>
+            ))}
+          </div>
+        </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="webhook-secret" className="font-mono">Webhook Secret</Label>
-                <Input
-                  id="webhook-secret"
-                  type="password"
-                  placeholder="Enter secret key"
-                  className="font-mono"
-                />
-              </div>
+        {/* Webhook Dispatches */}
+        <div className="soc-card rounded-xl p-6 space-y-5">
+          <div className="flex items-center gap-3 pb-3 border-b border-border/50">
+            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
+              <Webhook className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-foreground">
+                External Webhook & SIEM Dispatch
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Transmit structured JSON payload whenever a verified deepfake incident is created
+              </p>
+            </div>
+          </div>
 
-              <Button variant="outline" className="w-full font-mono">
-                Test Webhook
+          <div className="space-y-4 text-xs">
+            <div className="space-y-1.5">
+              <Label htmlFor="webhook-url" className="font-medium text-foreground">
+                Target Webhook URL
+              </Label>
+              <Input
+                id="webhook-url"
+                value={webhookUrl}
+                onChange={(e) => setWebhookUrl(e.target.value)}
+                className="bg-secondary/40 border-border text-xs h-9 font-mono"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="webhook-secret" className="font-medium text-foreground">
+                HMAC Signature Secret
+              </Label>
+              <Input
+                id="webhook-secret"
+                type="password"
+                value={webhookSecret}
+                onChange={(e) => setWebhookSecret(e.target.value)}
+                className="bg-secondary/40 border-border text-xs h-9 font-mono"
+              />
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleTestWebhook}
+                className="text-xs border-border hover:bg-secondary/60"
+              >
+                Send Ping Test
               </Button>
             </div>
-          </Card>
-
-          {/* Detection Thresholds */}
-          <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 card-interactive">
-            <div className="flex items-center gap-3 mb-6">
-              <Shield className="w-6 h-6 text-primary" />
-              <h2 className="text-2xl font-bold text-foreground font-mono">Detection Thresholds</h2>
-            </div>
-
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="deepfake-threshold" className="font-mono">Deepfake Detection Sensitivity</Label>
-                <Input
-                  id="deepfake-threshold"
-                  type="range"
-                  min="0"
-                  max="100"
-                  defaultValue="85"
-                  className="w-full"
-                />
-                <div className="flex justify-between text-sm text-muted-foreground font-mono">
-                  <span>Low</span>
-                  <span>85%</span>
-                  <span>High</span>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="coordination-threshold" className="font-mono">Coordination Detection Sensitivity</Label>
-                <Input
-                  id="coordination-threshold"
-                  type="range"
-                  min="0"
-                  max="100"
-                  defaultValue="75"
-                  className="w-full"
-                />
-                <div className="flex justify-between text-sm text-muted-foreground font-mono">
-                  <span>Low</span>
-                  <span>75%</span>
-                  <span>High</span>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Save Button */}
-          <div className="flex gap-4">
-            <Button 
-              className="flex-1 font-mono hover-lift" 
-              size="lg"
-              onClick={handleSaveSettings}
-            >
-              <SettingsIcon className="w-4 h-4 mr-2" />
-              Save Changes
-            </Button>
-            <Button variant="outline" className="flex-1 font-mono hover-lift" size="lg">
-              Reset to Defaults
-            </Button>
           </div>
         </div>
-      </div>
-    </div>
-  );
-};
 
-export default Settings;
+        {/* Action Controls */}
+        <div className="flex items-center justify-end gap-3 pt-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleResetDefaults}
+            className="text-xs border-border hover:bg-secondary/60 gap-1.5"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            Reset Defaults
+          </Button>
+          <Button
+            size="sm"
+            onClick={handleSaveSettings}
+            className="text-xs bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5 font-medium"
+          >
+            <Save className="w-3.5 h-3.5" />
+            Save Configuration
+          </Button>
+        </div>
+      </div>
+    </AppLayout>
+  );
+}

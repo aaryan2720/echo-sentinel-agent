@@ -8,76 +8,84 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Cyber Dark Theme - AI Agent Interface */
-    --background: 220 25% 6%;
-    --foreground: 180 100% 90%;
+    /* Refined Cyber Dark Theme - Security Operations Center Palette */
+    --background: 222 47% 5%;
+    --foreground: 210 40% 98%;
 
-    --card: 220 20% 10%;
-    --card-foreground: 180 100% 90%;
+    --card: 222 47% 8%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 220 25% 8%;
-    --popover-foreground: 180 100% 90%;
+    --popover: 222 47% 7%;
+    --popover-foreground: 210 40% 98%;
 
-    /* Neon Cyan - Primary Agent Color */
-    --primary: 180 100% 50%;
-    --primary-foreground: 220 25% 6%;
+    /* Cyan Primary - High-Tech Sentinel Accent */
+    --primary: 187 92% 52%;
+    --primary-foreground: 222 47% 6%;
 
-    /* Dark Slate - Secondary */
-    --secondary: 220 15% 15%;
-    --secondary-foreground: 180 100% 90%;
+    /* Dark Slate Secondary */
+    --secondary: 222 30% 14%;
+    --secondary-foreground: 210 40% 92%;
 
-    /* Muted Dark */
-    --muted: 220 15% 12%;
-    --muted-foreground: 180 30% 60%;
+    /* Muted Slate */
+    --muted: 222 28% 12%;
+    --muted-foreground: 215 20% 65%;
 
     /* Electric Blue Accent */
-    --accent: 200 100% 55%;
-    --accent-foreground: 220 25% 6%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 222 47% 6%;
 
-    /* Warning Orange */
-    --warning: 30 100% 55%;
-    --warning-foreground: 220 25% 6%;
+    /* Warning Amber */
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 47% 6%;
 
     /* Threat Red */
-    --destructive: 0 85% 60%;
-    --destructive-foreground: 220 25% 6%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
 
-    /* Success Green */
-    --success: 145 80% 50%;
-    --success-foreground: 220 25% 6%;
+    /* Success Emerald */
+    --success: 152 76% 46%;
+    --success-foreground: 222 47% 6%;
 
-    --border: 220 20% 20%;
-    --input: 220 20% 15%;
-    --ring: 180 100% 50%;
+    --border: 222 25% 18%;
+    --input: 222 25% 14%;
+    --ring: 187 92% 52%;
 
-    --radius: 0.75rem;
+    --radius: 0.625rem;
 
-    /* Custom Agent Colors */
-    --agent-glow: 180 100% 50%;
-    --threat-high: 0 85% 60%;
-    --threat-medium: 30 100% 55%;
-    --threat-low: 145 80% 50%;
-    --network-node: 260 100% 65%;
+    /* Custom Agent & Threat Tokens */
+    --agent-glow: 187 92% 52%;
+    --threat-critical: 0 84% 60%;
+    --threat-high: 16 90% 55%;
+    --threat-medium: 38 92% 50%;
+    --threat-low: 152 76% 46%;
+    --network-node: 265 89% 68%;
     
-    /* Gradients */
-    --gradient-agent: linear-gradient(135deg, hsl(180 100% 50% / 0.2), hsl(200 100% 55% / 0.1));
-    --gradient-threat: linear-gradient(135deg, hsl(0 85% 60% / 0.3), hsl(30 100% 55% / 0.2));
-    --gradient-scan: linear-gradient(90deg, hsl(180 100% 50% / 0.1), transparent, hsl(180 100% 50% / 0.1));
+    /* Subtle Gradients */
+    --gradient-agent: linear-gradient(135deg, hsl(187 92% 52% / 0.15), hsl(217 91% 60% / 0.08));
+    --gradient-threat: linear-gradient(135deg, hsl(0 84% 60% / 0.2), hsl(38 92% 50% / 0.1));
+    --gradient-card: linear-gradient(180deg, hsl(222 47% 9% / 0.8) 0%, hsl(222 47% 7% / 0.8) 100%);
+    --gradient-surface: linear-gradient(180deg, hsl(222 47% 11% / 0.5) 0%, hsl(222 47% 7% / 0.5) 100%);
     
-    /* Shadows & Glows */
-    --glow-primary: 0 0 20px hsl(180 100% 50% / 0.4);
-    --glow-threat: 0 0 20px hsl(0 85% 60% / 0.5);
-    --glow-success: 0 0 20px hsl(145 80% 50% / 0.4);
+    /* Refined Shadows & Depth */
+    --glow-primary: 0 0 24px -4px hsl(187 92% 52% / 0.35);
+    --glow-threat: 0 0 24px -4px hsl(0 84% 60% / 0.4);
+    --glow-success: 0 0 24px -4px hsl(152 76% 46% / 0.35);
   }
 }
 
 @layer base {
-  body {
-    @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  * {
+    @apply border-border;
   }
 
-  /* Cyber Grid Background */
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    caret-color: hsl(var(--primary));
+  }
+
+  /* Sophisticated Cyber Grid Background */
   body::before {
     content: '';
     position: fixed;
@@ -86,33 +94,40 @@ All colors MUST be HSL.
     width: 100%;
     height: 100%;
     background-image: 
-      linear-gradient(hsl(180 100% 50% / 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(180 100% 50% / 0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
+      radial-gradient(circle at 50% 0%, hsl(var(--primary) / 0.07) 0%, transparent 60%),
+      linear-gradient(hsl(var(--primary) / 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--primary) / 0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 48px 48px, 48px 48px;
     pointer-events: none;
     z-index: 0;
   }
 
-  /* Scrollbar Styling */
+  /* Clean Focus Ring */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Custom Scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: hsl(var(--background));
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--primary) / 0.3);
-    border-radius: 4px;
+    background: hsl(var(--muted-foreground) / 0.25);
+    border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--primary) / 0.5);
   }
 
-  /* Glow Effects */
+  /* Depth & Glow System */
   .glow-primary {
     box-shadow: var(--glow-primary);
   }
@@ -125,254 +140,78 @@ All colors MUST be HSL.
     box-shadow: var(--glow-success);
   }
 
-  /* Animated Gradient Border */
-  .gradient-border {
-    position: relative;
+  /* Refined Surface Cards */
+  .soc-card {
+    background: linear-gradient(180deg, hsl(var(--card) / 0.8) 0%, hsl(var(--card) / 0.5) 100%);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border) / 0.7);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .gradient-border::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
+  .soc-card:hover {
+    border-color: hsl(var(--primary) / 0.35);
   }
 
-  /* Enhanced Hover Effects */
+  .soc-card-active {
+    background: linear-gradient(180deg, hsl(var(--card) / 0.95) 0%, hsl(var(--card) / 0.75) 100%);
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow: 0 0 20px -5px hsl(var(--primary) / 0.15);
+  }
+
+  /* Interactive Elements */
   .hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
   }
 
   .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px hsl(var(--primary) / 0.2);
+    transform: translateY(-2px);
   }
 
   .hover-glow {
-    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
   .hover-glow:hover {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.4);
-    border-color: hsl(var(--primary) / 0.6);
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow: 0 0 16px -2px hsl(var(--primary) / 0.2);
   }
 
-  /* Loading Skeleton */
-  .skeleton {
-    background: linear-gradient(90deg, 
-      hsl(var(--muted)) 25%, 
-      hsl(var(--muted-foreground) / 0.1) 50%, 
-      hsl(var(--muted)) 75%
+  /* Shimmer Effect for Loading Skeletons */
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg, 
+      hsl(var(--muted)) 0%, 
+      hsl(var(--muted-foreground) / 0.12) 50%, 
+      hsl(var(--muted)) 100%
     );
     background-size: 200% 100%;
-    animation: skeleton-loading 1.5s ease-in-out infinite;
+    animation: skeleton-shimmer 1.8s ease-in-out infinite;
   }
 
-  @keyframes skeleton-loading {
+  @keyframes skeleton-shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
 
-  /* Pulse Animation for Live Elements */
-  .pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
+  /* Pulse Animation for Sentinel Live Indicators */
+  .pulse-sentinel {
+    animation: pulse-sentinel 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
-  @keyframes pulse-glow {
+  @keyframes pulse-sentinel {
     0%, 100% { 
-      box-shadow: 0 0 10px hsl(var(--primary) / 0.3);
       opacity: 1;
+      transform: scale(1);
     }
     50% { 
-      box-shadow: 0 0 20px hsl(var(--primary) / 0.6);
-      opacity: 0.9;
+      opacity: 0.5;
+      transform: scale(0.92);
     }
   }
 
-  /* Scan Line Effect */
-  .scan-line {
-    position: relative;
-    overflow: hidden;
+  /* Tabular Figures for High-Precision Telemetry */
+  .font-data {
+    font-feature-settings: "tnum" 1, "zero" 1;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
-
-  .scan-line::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.2), transparent);
-    animation: scan 3s linear infinite;
-  }
-
-  @keyframes scan {
-    0% { left: -100%; }
-    100% { left: 100%; }
-  }
-
-  /* Shimmer Effect */
-  .shimmer {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .shimmer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -150%;
-    width: 150%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-      transparent, 
-      hsl(var(--primary) / 0.1), 
-      transparent
-    );
-    animation: shimmer 2s infinite;
-  }
-
-  @keyframes shimmer {
-    0% { left: -150%; }
-    100% { left: 150%; }
-  }
-
-  /* Fade In Animation */
-  .fade-in {
-    animation: fadeIn 0.5s ease-out;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Scale In Animation */
-  .scale-in {
-    animation: scaleIn 0.3s ease-out;
-  }
-
-  @keyframes scaleIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-  }
-
-  /* Slide In Animations */
-  .slide-in-left {
-    animation: slideInLeft 0.4s ease-out;
-  }
-
-  @keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-20px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  .slide-in-right {
-    animation: slideInRight 0.4s ease-out;
-  }
-
-  @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(20px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  .slide-in-top {
-    animation: slideInTop 0.4s ease-out;
-  }
-
-  @keyframes slideInTop {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Progress Bar Animation */
-  .progress-bar {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .progress-bar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background: linear-gradient(90deg, 
-      hsl(var(--primary) / 0.5), 
-      hsl(var(--primary))
-    );
-    animation: progress-fill 1.5s ease-out;
-  }
-
-  @keyframes progress-fill {
-    from { width: 0; }
-  }
-
-  /* Interactive Button Effects */
-  button, a {
-    transition: all 0.2s ease;
-  }
-
-  button:active, a:active {
-    transform: scale(0.98);
-  }
-
-  /* Card Hover Effects */
-  .card-interactive {
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-
-  .card-interactive:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px hsl(var(--primary) / 0.15);
-    border-color: hsl(var(--primary) / 0.4);
-  }
-
-  /* Badge Pulse */
-  .badge-pulse {
-    animation: badge-pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes badge-pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-  }
-
-  /* Typing Animation */
-  .typing {
-    overflow: hidden;
-    border-right: 2px solid hsl(var(--primary));
-    white-space: nowrap;
-    animation: typing 3s steps(40) 1s 1 normal both, blink 0.75s step-end infinite;
-  }
-
-  @keyframes typing {
-    from { width: 0; }
-    to { width: 100%; }
-  }
-
-  @keyframes blink {
-    50% { border-color: transparent; }
-  }
-}
-
-/* Slide in from right animation */
-@keyframes slide-in-right {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-.animate-slide-in-right {
-  animation: slide-in-right 0.3s ease-out;
 }

@@ -1,302 +1,176 @@
-import { useEffect, useState } from 'react'
-import { supabase, getAgents, getIncidents, testConnection } from '@/lib/supabase'
-import type { Agent, Incident } from '@/lib/supabase'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { CheckCircle2, XCircle, Loader2, Database, RefreshCw } from 'lucide-react'
+import { useEffect, useState } from 'react';
+import { supabase, getAgents, getIncidents, testConnection } from '@/lib/supabase';
+import type { Agent, Incident } from '@/lib/supabase';
+import { AppLayout } from '@/components/layout/AppLayout';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { CheckCircle2, XCircle, Loader2, Database, RefreshCw, Layers, ShieldCheck, Server } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function DatabaseTest() {
-  const [agents, setAgents] = useState<Agent[]>([])
-  const [incidents, setIncidents] = useState<Incident[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [connectionTest, setConnectionTest] = useState<{ success: boolean; message: string } | null>(null)
+  const navigate = useNavigate();
+  const [agents, setAgents] = useState<Agent[]>([]);
+  const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [connectionTest, setConnectionTest] = useState<{ success: boolean; message: string } | null>(null);
 
   const fetchData = async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
     
     try {
-      // Test connection first
-      const connTest = await testConnection()
-      setConnectionTest(connTest)
+      const connTest = await testConnection();
+      setConnectionTest(connTest);
 
       if (!connTest.success) {
-        throw new Error(connTest.message)
+        throw new Error(connTest.message);
       }
 
-      // Fetch agents
-      const agentsData = await getAgents()
-      setAgents(agentsData)
+      const agentsData = await getAgents();
+      setAgents(agentsData);
 
-      // Fetch incidents
-      const incidentsData = await getIncidents(5)
-      setIncidents(incidentsData)
-
-      setLoading(false)
+      const incidentsData = await getIncidents(5);
+      setIncidents(incidentsData);
     } catch (err) {
-      console.error('Database error:', err)
-      setError(err instanceof Error ? err.message : 'Unknown error occurred')
-      setLoading(false)
+      console.error('Database error:', err);
+      setError(err instanceof Error ? err.message : 'Unknown error occurred');
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchData()
-  }, [])
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-lg text-muted-foreground font-mono">Connecting to Supabase...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-8">
-        <Card className="max-w-2xl w-full border-destructive">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <XCircle className="w-6 h-6 text-destructive" />
-              <CardTitle className="text-destructive">Database Connection Failed</CardTitle>
-            </div>
-            <CardDescription>Unable to connect to Supabase</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-destructive/10 p-4 rounded-lg mb-4">
-              <p className="text-sm text-destructive font-mono">{error}</p>
-            </div>
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <p className="font-semibold">Troubleshooting steps:</p>
-              <ul className="list-disc list-inside space-y-1 ml-2">
-                <li>Check your .env file has correct VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY</li>
-                <li>Verify your Supabase project is running</li>
-                <li>Ensure you've run all 3 SQL migrations (schema, RLS, seed data)</li>
-                <li>Restart your dev server after changing .env</li>
-              </ul>
-            </div>
-            <Button onClick={fetchData} className="mt-4">
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Retry Connection
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
+    fetchData();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-background p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold mb-2 font-mono text-primary flex items-center gap-3">
-                <Database className="w-10 h-10" />
-                Database Connection Test
-              </h1>
-              <p className="text-muted-foreground">Testing Supabase connection and data retrieval</p>
+    <AppLayout
+      title="Supabase Database Telemetry"
+      subtitle="Verify PostgreSQL connection health, tables structure, and live row synchronization"
+      actions={
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            onClick={fetchData}
+            disabled={loading}
+            className="text-xs bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5"
+          >
+            {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+            Re-test Connection
+          </Button>
+        </div>
+      }
+    >
+      <div className="space-y-6">
+        {/* Connection Status Card */}
+        <div className="soc-card rounded-xl p-6 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-border/50">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-lg bg-primary/10 text-primary">
+                <Database className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-foreground">PostgreSQL Database Connectivity</h3>
+                <p className="text-xs text-muted-foreground">Direct ping to Supabase REST & Realtime API</p>
+              </div>
             </div>
-            <Button onClick={fetchData} variant="outline">
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Refresh Data
-            </Button>
+
+            {loading ? (
+              <Badge variant="outline" className="font-mono text-xs text-primary border-primary/30">
+                <Loader2 className="w-3 h-3 mr-1 animate-spin" /> Pinging...
+              </Badge>
+            ) : error ? (
+              <Badge variant="destructive" className="font-mono text-xs uppercase">
+                Connection Failed
+              </Badge>
+            ) : (
+              <Badge className="bg-success/20 text-success border-success/30 font-mono text-xs uppercase">
+                Connected
+              </Badge>
+            )}
           </div>
+
+          {error && (
+            <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/25 space-y-2 text-xs text-destructive">
+              <div className="font-bold flex items-center gap-1.5">
+                <XCircle className="w-4 h-4" />
+                Connection Error Message
+              </div>
+              <p className="font-mono">{error}</p>
+            </div>
+          )}
+
+          {!error && !loading && connectionTest && (
+            <div className="p-4 rounded-lg bg-success/10 border border-success/25 text-xs text-success flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>{connectionTest.message}</span>
+            </div>
+          )}
         </div>
 
-        {/* Connection Status */}
-        {connectionTest && (
-          <Card className={`mb-8 ${connectionTest.success ? 'border-green-500' : 'border-destructive'}`}>
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                {connectionTest.success ? (
-                  <CheckCircle2 className="w-6 h-6 text-green-500" />
-                ) : (
-                  <XCircle className="w-6 h-6 text-destructive" />
-                )}
-                <CardTitle>Connection Status</CardTitle>
+        {/* Live Tables Data */}
+        {!error && !loading && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Agents Table */}
+            <div className="soc-card rounded-xl p-6 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border/50">
+                <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+                  <Server className="w-4 h-4 text-primary" />
+                  Agents Table ({agents.length} rows)
+                </h3>
+                <span className="text-xs text-muted-foreground font-mono">public.agents</span>
               </div>
-            </CardHeader>
-            <CardContent>
-              <p className={`font-mono ${connectionTest.success ? 'text-green-500' : 'text-destructive'}`}>
-                {connectionTest.message}
-              </p>
-            </CardContent>
-          </Card>
-        )}
 
-        {/* Agents Section */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="font-mono">
-              AI Agents ({agents.length})
-            </CardTitle>
-            <CardDescription>
-              All agents fetched from the 'agents' table
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {agents.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">
-                No agents found. Did you run the seed data migration?
-              </p>
-            ) : (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="space-y-2">
                 {agents.map((agent) => (
-                  <Card key={agent.id} className="bg-card/50">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-lg">{agent.name}</CardTitle>
-                        <Badge
-                          variant={
-                            agent.status === 'processing'
-                              ? 'default'
-                              : agent.status === 'complete'
-                              ? 'default'
-                              : 'secondary'
-                          }
-                          className={
-                            agent.status === 'processing'
-                              ? 'bg-blue-600 animate-pulse'
-                              : agent.status === 'complete'
-                              ? 'bg-green-600'
-                              : ''
-                          }
-                        >
-                          {agent.status}
-                        </Badge>
-                      </div>
-                      <CardDescription className="text-xs">
-                        Type: {agent.type}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        {agent.description}
-                      </p>
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-muted-foreground">Tasks Completed:</span>
-                          <span className="font-bold">{agent.tasks_completed}</span>
-                        </div>
-                        {agent.current_task && (
-                          <div className="text-xs">
-                            <span className="text-muted-foreground">Current Task:</span>
-                            <p className="text-blue-400 mt-1 animate-pulse">• {agent.current_task}</p>
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <div
+                    key={agent.agent_id}
+                    className="p-3 rounded-lg bg-secondary/40 border border-border/50 text-xs flex items-center justify-between"
+                  >
+                    <div>
+                      <div className="font-bold text-foreground">{agent.name}</div>
+                      <div className="text-[10px] text-muted-foreground font-mono">{agent.agent_type}</div>
+                    </div>
+                    <Badge variant="outline" className="font-mono text-[10px]">
+                      {agent.status}
+                    </Badge>
+                  </div>
                 ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Incidents Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-mono">
-              Recent Incidents ({incidents.length})
-            </CardTitle>
-            <CardDescription>
-              Latest incidents fetched from the 'incidents' table
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {incidents.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">
-                No incidents found. Did you run the seed data migration?
-              </p>
-            ) : (
-              <div className="space-y-4">
-                {incidents.map((incident) => (
-                  <Card key={incident.id} className="bg-card/50">
-                    <CardHeader>
-                      <div className="flex items-center justify-between mb-2">
-                        <Badge variant="outline" className="font-mono text-xs">
-                          {incident.incident_id}
-                        </Badge>
-                        <div className="flex gap-2">
-                          <Badge
-                            variant={
-                              incident.severity === 'critical'
-                                ? 'destructive'
-                                : incident.severity === 'high'
-                                ? 'default'
-                                : 'secondary'
-                            }
-                          >
-                            {incident.severity}
-                          </Badge>
-                          <Badge
-                            variant={incident.status === 'active' ? 'default' : 'outline'}
-                            className={incident.status === 'active' ? 'bg-green-600' : ''}
-                          >
-                            {incident.status}
-                          </Badge>
-                        </div>
-                      </div>
-                      <CardTitle className="text-xl">{incident.title}</CardTitle>
-                      <CardDescription>{incident.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                        <div>
-                          <p className="text-muted-foreground text-xs">Confidence</p>
-                          <p className="font-bold text-primary">{incident.confidence_score}%</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground text-xs">Accounts</p>
-                          <p className="font-bold">{incident.accounts_involved}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground text-xs">Reach</p>
-                          <p className="font-bold text-accent">{incident.reach_estimate}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground text-xs">Evidence</p>
-                          <p className="font-bold">{incident.evidence_count}</p>
-                        </div>
-                      </div>
-                      <div className="flex gap-2 flex-wrap mt-4">
-                        {incident.platform.map((platform) => (
-                          <Badge key={platform} variant="outline" className="text-xs">
-                            {platform}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Success Message */}
-        <Card className="mt-8 border-green-500">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-8 h-8 text-green-500" />
-              <div>
-                <p className="font-bold text-lg text-green-500">✅ Database Connection Successful!</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Supabase is working correctly. You can now connect your components to the database.
-                </p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+
+            {/* Incidents Table */}
+            <div className="soc-card rounded-xl p-6 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border/50">
+                <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-destructive" />
+                  Incidents Table ({incidents.length} rows)
+                </h3>
+                <span className="text-xs text-muted-foreground font-mono">public.incidents</span>
+              </div>
+
+              <div className="space-y-2">
+                {incidents.map((inc) => (
+                  <div
+                    key={inc.incident_id}
+                    className="p-3 rounded-lg bg-secondary/40 border border-border/50 text-xs flex items-center justify-between"
+                  >
+                    <div>
+                      <div className="font-bold text-foreground line-clamp-1">{inc.title}</div>
+                      <div className="text-[10px] text-muted-foreground font-mono">ID: {inc.incident_id}</div>
+                    </div>
+                    <Badge variant="destructive" className="font-mono text-[10px]">
+                      {inc.severity}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
-  )
+    </AppLayout>
+  );
 }

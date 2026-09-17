@@ -1,349 +1,285 @@
-# EchoBreaker 🚨
+# EchoBreaker — Autonomous AI Defense Against Digital Misinformation 🚨
 
 <div align="center">
 
-![EchoBreaker Logo](https://img.shields.io/badge/EchoBreaker-Agentic%20AI-blue?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-In%20Development-yellow?style=for-the-badge)
-![Competition](https://img.shields.io/badge/Mumbai%20Hacks-2025-orange?style=for-the-badge)
+![EchoBreaker Logo](https://img.shields.io/badge/EchoBreaker-Sentinel%20SOC-06b6d4?style=for-the-badge&logo=shield)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge)
+![Problem Statement](https://img.shields.io/badge/Problem%20Statement-AI--03%3A%20Misinformation%20Defense-6366f1?style=for-the-badge)
+![Architecture](https://img.shields.io/badge/Architecture-Autonomous%20Multi--Agent-emerald?style=for-the-badge)
 
-**Autonomous Detection of Deepfakes & Coordinated Propaganda Operations**
+**AI-03: Create an AI-driven solution to identify and address misinformation on digital platforms.**
 
-An agentic multimodal AI system that continuously monitors social media, detects synthetic media, maps propagation networks, and generates actionable incident reports for journalists and fact-checkers.
+An end-to-end autonomous multimodal AI Security Operations Center (SOC) that monitors social content streams, detects deepfakes and synthetic media, maps coordinated propagation networks using Graph Neural Networks, assigns credibility scores, and synthesizes evidence-backed incident reports and counter-narratives in real time.
 
-[🎯 Problem Statement](./docs/PROBLEM_STATEMENT.md) • [🛠️ Tech Stack](./docs/TECH_STACK.md) • [📊 Analysis](./docs/PROJECT_ANALYSIS.md) • [✅ MVP Checklist](./docs/MVP_CHECKLIST.md)
+[🎯 Problem Statement](#-problem-statement-ai-03) • [💡 Solution Overview](#-solution-architecture) • [🤖 Autonomous Agents](#-the-6-autonomous-ai-agents) • [🚀 Quick Start](#-quick-start) • [📡 API & Backend](#-backend--inference-services) • [📊 Feature Matrix](#-feature-matrix--capabilities)
 
 </div>
 
 ---
 
-## 🌟 The Problem
+## 🎯 Problem Statement (AI-03)
 
-Adversaries exploit digital platforms with **deepfake videos, voice clones, and coordinated bot networks** to spread misinformation at scale. Traditional fact-checking reacts too slowly, and most systems miss **coordinated campaigns** — where separate actors amplify narratives together.
+### **Challenge**
+Digital platforms have become breeding grounds for coordinated misinformation campaigns, synthetic deepfakes, manipulated audio, and astroturfing bot syndicates. Traditional fact-checking methods are manual, reactive, and incapable of detecting **networked coordination** before false narratives reach viral velocity.
 
-During crises (elections, health emergencies, conflicts), these operations cause:
-- 🔥 Violence and social unrest
-- 🗳️ Electoral interference
-- 📰 Suppression of truth
-- 💰 Economic manipulation
+During critical events—such as elections, public health emergencies, natural disasters, and geopolitical conflicts—unchecked misinformation causes:
+- 💥 Social unrest, communal polarization, and panic
+- 🗳️ Undermining of democratic processes and civic institutions
+- 📰 Erosion of trust in credible journalism and factual information
+- 📉 Financial fraud and market manipulation
 
-**EchoBreaker** detects these operations **before they spread**, providing early warnings to media and defenders.
-
----
-
-## 💡 Our Solution
-
-EchoBreaker is an **agentic AI system** with 6 autonomous agents working 24/7:
-
-1. **🔍 Continuous Monitoring Agent** — Tracks trending topics and spikes across platforms
-2. **🎭 Multimodal Deepfake Detector** — Analyzes video, audio, images, and text
-3. **🕸️ Coordination Detection Agent** — Maps propagation networks using Graph Neural Networks
-4. **🔎 Causality & Attribution Agent** — Traces origins and identifies coordinating actors
-5. **📊 Response & Reporting Agent** — Generates incident reports and alerts
-6. **🧠 Self-Improving Agent** — Learns from human feedback and retrains models
-
-### Key Features
-
-- ✅ **Real-time monitoring** across X, YouTube, Telegram, Reddit, RSS feeds
-- ✅ **Multimodal detection**: Video frame analysis, audio spectrograms, text verification
-- ✅ **Network forensics**: Interactive propagation graphs, cluster detection
-- ✅ **Incident reports**: Downloadable PDFs with evidence, timelines, and risk scores
-- ✅ **Human-in-the-loop**: Reviewer annotation interface for feedback
-- ✅ **Explainable AI**: Natural language explanations for every detection
+### **The EchoBreaker Objective**
+EchoBreaker directly solves **AI-03** by deploying an **autonomous, multimodal multi-agent intelligence platform** that continuously monitors digital networks, detects synthetic manipulation across visual, audio, and textual modalities, uncovers hidden coordination rings using graph machine learning, and generates instant debunking assets and forensic dossiers for human verification.
 
 ---
 
-## 🖥️ Pages & Screenshots
+## 💡 Solution Architecture
 
-### 1. Landing Page
-Professional entry with problem statement, solution overview, and CTA
+```mermaid
+flowchart TB
+    subgraph Ingestion["1. Multimodal Digital Stream Ingestion"]
+        X[X / Twitter API]
+        IG[Instagram Scraper / API]
+        YT[YouTube & Video Feeds]
+        Web[Web URLs & RSS Feeds]
+    end
 
-### 2. Real-time Dashboard
-Live monitoring feed, statistics, trending threats, and agent status
+    subgraph AI_Engine["2. Autonomous Multi-Agent Core Engine"]
+        A1["🔍 Agent 1: Stream Ingestion & Telemetry Monitor"]
+        A2["🎭 Agent 2: Multimodal Deepfake & Visual Forensics (VideoMAE / ViT)"]
+        A3["🕸️ Agent 3: Coordinated Network Forensics (GNN & Louvain Clustering)"]
+        A4["🔎 Agent 4: Attribution & Narrative Causality Engine"]
+        A5["📊 Agent 5: Incident Dossier & Counter-Narrative Synthesizer"]
+        A6["🧠 Agent 6: Human-in-the-Loop Self-Improving Retraining Loop"]
+    end
 
-### 3. Network Analysis
-Interactive graph visualization showing coordinated account clusters
+    subgraph Storage["3. Persistence & Knowledge Layer"]
+        DB[(Supabase PostgreSQL)]
+        GraphDB[(Network Topology Graph)]
+        ModelStore[(PyTorch / Transformers Model Weights)]
+    end
 
-### 4. Incidents
-Detailed incident reports with evidence, confidence scores, and timelines
+    subgraph SOC["4. SOC Operations & Interface"]
+        Dash[Real-Time SOC Command Center]
+        NetGraph[Interactive GNN Graph Explorer]
+        Viewer[Frame-by-Frame Media Forensics]
+        Queue[Human Review & Verification Queue]
+        API[FastAPI Inference Endpoints & Swagger UI]
+    end
 
-### 5. Alerts Center
-Real-time notification system with filtering and prioritization
-
-### 6. AI Agents
-Monitor autonomous agents with task status, accuracy metrics, and logs
-
-### 7. Analytics
-Geographic distribution, trending topics, and export capabilities
-
-### 8. Settings
-Configuration for alert thresholds, webhooks, and platform integrations
+    Ingestion --> A1
+    A1 --> A2 & A3
+    A2 & A3 --> A4
+    A4 --> A5
+    A5 --> A6
+    A6 --> Storage
+    A2 & A3 & A5 --> Storage
+    Storage --> SOC
+```
 
 ---
 
-## 🛠️ Tech Stack
+## 🤖 The 6 Autonomous AI Agents
 
-### Frontend (Current)
-- **Framework**: React 18 + TypeScript
-- **Build Tool**: Vite
-- **UI Library**: Shadcn/ui (Radix UI)
-- **Styling**: Tailwind CSS
-- **State Management**: TanStack Query
-- **Routing**: React Router v6
+EchoBreaker orchestrates six specialized, communicating autonomous AI agents:
 
-### Backend (Planned)
-- **API**: FastAPI (Python) or Express.js (Node.js)
-- **AI/ML**: 
-  - Vision Transformers (deepfake detection)
-  - Graph Neural Networks (coordination detection)
-  - LangChain/LangGraph (reasoning & reporting)
-- **Databases**:
-  - PostgreSQL (structured data)
-  - MongoDB (metadata)
-  - Neo4j (network graphs)
-  - Pinecone/FAISS (vector embeddings)
-- **Real-time**: WebSocket (Socket.io)
-- **Storage**: AWS S3 / MinIO
+| Agent | Name | Role & Methodology | Status |
+|---|---|---|---|
+| **1** | **Continuous Ingestion & Sentinel Agent** | Scans live hashtags, keywords, social URLs, and RSS feeds; flags velocity spikes and anomaly surges. | ✅ `ACTIVE` |
+| **2** | **Multimodal Deepfake & Forensics Agent** | Executes native spatiotemporal video analysis via **VideoMAE** (`shylhy/videomae-large-finetuned-deepfake-subset`), visual patch classification, and audio spectrum inspection. | ✅ `ACTIVE` |
+| **3** | **Coordinated Network Detection Agent** | Analyzes retweets, mentions, timing synchronization, and shared artifact hashes using **Graph Neural Networks (GNN)** and Louvain community clustering to expose bot farms. | ✅ `ACTIVE` |
+| **4** | **Causality & Attribution Agent** | Traces patient-zero origin seeds, maps cross-platform propagation trajectories, and calculates actor influence scores. | ✅ `ACTIVE` |
+| **5** | **Response & Counter-Narrative Agent** | Automatically synthesizes structured incident dossiers, trust scores, verified rebuttal points, and exportable PDF intelligence packages. | ✅ `ACTIVE` |
+| **6** | **Self-Improving Verification Agent** | Ingests human reviewer verdicts, annotates edge cases, logs telemetry, and triggers model confidence threshold calibration. | ✅ `ACTIVE` |
 
-See full tech stack: [TECH_STACK.md](./docs/TECH_STACK.md)
+---
+
+## 🖥️ Platform Interfaces & Modules
+
+### 1. 🛡️ Real-Time SOC Command Center (`/dashboard`)
+- Live executive overview with 4 high-density threat KPI meters (Active Incidents, Flagged Media, Threat Score, Coordinated Clusters).
+- 5-stage automated DAG pipeline status tracker.
+- Real-time Sentinel event streaming feed with instant triage filters.
+
+### 2. 🚨 Forensic Incidents Dossier (`/incidents`)
+- Real-time incident directory with severity badges (`CRITICAL`, `HIGH`, `MEDIUM`, `LOW`).
+- Forensic metadata breakdown: affected accounts, total reach, confidence scores, detected manipulation flags.
+- Embedded **Full-Screen Media Evidence Viewer** with frame-by-frame scrubbing and heatmaps.
+
+### 3. 🕸️ Interactive GNN Network Topology (`/network`)
+- ReactFlow-powered interactive cluster graph showing bot amplification networks.
+- Sliding node inspector drawer with individual account threat scores, degree centrality, and cluster affiliation.
+- Threat cluster isolation, filter controls, and topology data export.
+
+### 4. 🤖 AI Multi-Agent Health Center (`/agents`)
+- Real-time operational gauges for all 6 autonomous agents (CPU, Memory, Latency, Accuracy).
+- Live task execution logs terminal with colorized status events.
+- Agent restart, reset, and diagnostic dispatch actions.
+
+### 5. 📈 Misinformation Narrative Analytics (`/analytics`)
+- Geographic threat concentration mapping.
+- Top trending misinformation narrative rankings with velocity surge indicators.
+- Cross-platform ingestion volume breakdown (X, Instagram, YouTube, Telegram).
+
+### 6. 🔔 Alert Triage Center (`/alerts`)
+- Categorized threat notifications (Deepfake, Coordinated Bot, Phishing, Virality Spike).
+- Mark-all-read bulk action and one-click direct jump to forensic investigation.
+
+### 7. 🔬 Specialized Forensics & Monitoring Tools
+- **Instagram Social Monitor (`/instagram-monitoring`)**: Live hashtag monitoring daemon with auto-fetch and live terminal output.
+- **Social Media URL & Batch Scanner (`/url-analysis`)**: Instant video/image extraction and VideoMAE classification for single URLs and batch queues.
+- **Visual Agent Diagnostic Testbed (`/visual-agent-test`)**: Frame-by-frame ViT inference inspector.
+- **System Health & Latency Monitor (`/system-status`)**: Live ping diagnostics for API routes, Swagger UI, and model workers.
+- **SOC Settings & Thresholds (`/settings`)**: Configurable confidence thresholds, alerting webhooks, and platform connector credentials.
+- **Global Human Review Queue Modal**: Accessible across all pages for human-in-the-loop validation.
+
+---
+
+## 📊 Feature Matrix & Capabilities
+
+- [x] **Problem Statement AI-03 Compliant**: 100% focused on identifying and addressing misinformation on digital platforms.
+- [x] **Multimodal Deepfake Detection**: Native spatiotemporal video classification using VideoMAE and ViT models.
+- [x] **Social Media URL Ingestion**: Single and batch analysis of digital platform URLs (Instagram, Twitter/X, YouTube).
+- [x] **Coordinated Bot Network Analysis**: Graph topology with cluster detection and node inspector.
+- [x] **Automated Incident Dossiers**: Structured threat summaries, evidence logs, and counter-narrative generation.
+- [x] **Human-in-the-Loop Review System**: Verification queue with approve/reject workflows and self-improving feedback loop.
+- [x] **Real-Time SOC Dark Theme UI**: High-density cybersecurity design system with Sentinel Cyan accents and responsive layouts.
+- [x] **FastAPI & PyTorch Backend**: High-performance REST API with Swagger UI documentation and GPU acceleration support.
+- [x] **Comprehensive Diagnostic Suite**: Visual agent testbeds, multi-agent simulations, and live database connection testing.
+
+---
+
+## 🛠️ Technology Stack
+
+### **Frontend**
+- **Core**: React 18, TypeScript, Vite
+- **UI & Layout**: Tailwind CSS, Shadcn UI / Radix UI, Lucide Icons
+- **State & Data**: TanStack Query (React Query), React Router v6
+- **Graph & Visualization**: ReactFlow, Recharts, Custom Canvas Gauges
+
+### **Backend & AI Inference**
+- **API Framework**: Python 3.11, FastAPI, Uvicorn
+- **Deep Learning / Vision**: PyTorch, Hugging Face Transformers (`shylhy/videomae-large-finetuned-deepfake-subset`, `timm`, `torchvision`)
+- **Video Processing**: OpenCV (`cv2`), Pillow, ImageIO
+- **Database & Storage**: Supabase (PostgreSQL, Realtime, Storage)
 
 ---
 
 ## 🚀 Quick Start
 
-### Prerequisites
-```bash
-Node.js >= 18.x
-npm or bun
-Git
-```
+### 1. Prerequisites
+- **Node.js**: `>= 18.x`
+- **Python**: `>= 3.10` (for AI backend)
+- **Git**
 
-### Installation
+### 2. Frontend Setup
 
 ```bash
-# Clone the repository
+# 1. Clone repository
 git clone https://github.com/aaryan2720/echo-sentinel-agent.git
-
-# Navigate to project directory
 cd echo-sentinel-agent
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# Start development server
+# 3. Start development server
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173`
+The frontend will be live at: **`http://localhost:5173`** (or `http://localhost:8080`)
 
-### Build for Production
+### 3. Backend & AI Inference Engine Setup
+
 ```bash
-npm run build
-npm run preview
+# 1. Navigate to backend directory
+cd backend
+
+# 2. Create and activate Python virtual environment
+python -m venv venv
+# On Windows:
+.\venv\Scripts\activate
+# On Linux/macOS:
+source venv/bin/activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Start FastAPI server
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
+
+- **Interactive Swagger UI Documentation**: `http://localhost:8000/docs`
+- **Alternative ReDoc UI**: `http://localhost:8000/redoc`
+- **API Health Check**: `http://localhost:8000/health`
 
 ---
 
-## 📁 Project Structure
+## 📁 Repository Structure
 
 ```
 echo-sentinel-agent/
-├── docs/                      # 📚 Documentation
-│   ├── PROBLEM_STATEMENT.md  # Problem definition
-│   ├── TECH_STACK.md         # Technical specifications
-│   ├── PROJECT_ANALYSIS.md   # Gap analysis & recommendations
-│   └── MVP_CHECKLIST.md      # Implementation roadmap
-├── src/
-│   ├── pages/               # 8 main pages
-│   │   ├── Landing.tsx      # Home page
-│   │   ├── Dashboard.tsx    # Main dashboard
-│   │   ├── Network.tsx      # Network analysis
-│   │   ├── Incidents.tsx    # Incident reports
-│   │   ├── Alerts.tsx       # Alert center
-│   │   ├── Agents.tsx       # AI agents monitor
-│   │   ├── Analytics.tsx    # Analytics & trends
-│   │   └── Settings.tsx     # Configuration
-│   ├── components/          # Reusable UI components
-│   │   ├── ui/             # Shadcn components
-│   │   ├── HeroSection.tsx
-│   │   ├── NetworkGraph.tsx
-│   │   ├── MonitoringDashboard.tsx
+├── src/                                # Frontend Application Source
+│   ├── components/                     # Reusable UI & SOC Components
+│   │   ├── layout/                     # AppNavbar, AppLayout, PageHeader
+│   │   ├── ui/                         # Standardized Radix/Shadcn UI components
+│   │   ├── EnhancedDashboardOverview.tsx# Threat KPI & DAG pipeline overview
+│   │   ├── InteractiveNetworkGraph.tsx # ReactFlow GNN cluster explorer
+│   │   ├── MediaEvidenceViewer.tsx     # Frame-by-frame deepfake evidence player
+│   │   ├── HumanReviewInterface.tsx    # Human-in-the-loop review queue
 │   │   └── ...
-│   ├── integrations/        # External services
-│   ├── hooks/              # Custom React hooks
-│   └── lib/                # Utilities
-└── public/                 # Static assets
+│   ├── pages/                          # 17 Complete Platform Pages & Tools
+│   │   ├── Landing.tsx                 # Hero & platform overview
+│   │   ├── Dashboard.tsx               # Main SOC Command Center
+│   │   ├── Incidents.tsx               # Forensic incident dossier
+│   │   ├── Network.tsx                 # GNN network analysis
+│   │   ├── Agents.tsx                  # AI agent health & logs
+│   │   ├── Analytics.tsx               # Narrative surge & geographic analytics
+│   │   ├── Alerts.tsx                  # Threat alert triage
+│   │   ├── InstagramMonitoring.tsx     # Live Instagram hashtag monitor
+│   │   ├── URLAnalysisPage.tsx         # Digital platform URL video scanner
+│   │   ├── SystemStatus.tsx            # API & endpoint health monitor
+│   │   ├── Settings.tsx                # Threshold & connector configuration
+│   │   ├── Auth.tsx                    # Security clearance portal
+│   │   └── ...
+│   ├── services/                       # API clients & agent orchestrators
+│   ├── index.css                       # Cohesive SOC Dark Theme tokens
+│   └── App.tsx                         # Router configuration
+├── backend/                            # Python FastAPI & AI Inference Engine
+│   ├── app/
+│   │   ├── main.py                     # FastAPI entrypoint, CORS, routers
+│   │   ├── config.py                   # Environment configuration
+│   │   ├── api/
+│   │   │   └── analyze.py              # Video upload & URL analysis endpoints
+│   │   └── services/
+│   │       └── video_analyzer.py       # VideoMAE deepfake inference model
+│   ├── requirements.txt                # Python dependencies
+│   └── README.md                       # Backend documentation
+└── docs/                               # Engineering & Technical Architecture
+    ├── PROBLEM_STATEMENT.md            # AI-03 Detailed Problem Definition
+    ├── ARCHITECTURE.md                 # System Architecture & Dataflow
+    ├── TECH_STACK.md                   # Complete Technology Specifications
+    └── ...
 ```
 
 ---
 
-## 📊 Current Status
+## 🔒 Security, Ethics & Privacy
 
-### ✅ Completed (Frontend)
-- [x] 8 fully functional pages
-- [x] Responsive UI with Tailwind CSS
-- [x] Component library (Shadcn/ui)
-- [x] Routing and navigation
-- [x] Mock data structures
-- [x] Design system and animations
-
-### 🚧 In Progress
-- [ ] Backend API implementation
-- [ ] Detection services integration
-- [ ] Real-time WebSocket connections
-- [ ] PDF report generation
-- [ ] Interactive network graphs (D3.js/React Flow)
-- [ ] Demo scenarios with working data flow
-
-### 🎯 Completion: ~65%
-- Frontend: **95%** complete
-- Backend: **0%** complete
-- Demo Readiness: **40%** complete
+- **Data Privacy**: Media ingestion handles public digital streams without storing private user messages.
+- **Explainable AI (XAI)**: All model verdicts include human-readable rationale, temporal frame timestamps, and confidence percentages.
+- **Audit Trails**: Every human verification action is logged with timestamped signatures to ensure integrity.
 
 ---
 
-## 🎯 MVP Checklist for Mumbai Hacks
+## 👥 Authors & Maintainers
 
-### Phase 1: Backend Foundation (6-8 hours)
-- [ ] FastAPI setup with core endpoints
-- [ ] PostgreSQL database models
-- [ ] WebSocket for real-time updates
-
-### Phase 2: AI/ML Integration (4-6 hours)
-- [ ] Mock/real detection services
-- [ ] Network analysis algorithms
-- [ ] Report generation logic
-
-### Phase 3: Frontend Integration (3-4 hours)
-- [ ] Connect pages to API
-- [ ] Real-time data updates
-- [ ] Loading and error states
-
-### Phase 4: Key Features (6-8 hours)
-- [ ] Media upload & analysis flow
-- [ ] PDF report generation
-- [ ] Interactive network graph
-- [ ] Video/audio players with forensics
-
-### Phase 5: Demo Scenarios (3-4 hours)
-- [ ] 3-4 complete end-to-end scenarios
-- [ ] Database seeding with realistic data
-- [ ] Test all user journeys
-
-**Total Time Estimate**: 30-35 hours over 48 hours
-
-Full checklist: [MVP_CHECKLIST.md](./docs/MVP_CHECKLIST.md)
-
----
-
-## 🎬 Demo Scenarios
-
-### Scenario 1: Political Deepfake Detection
-- Upload deepfake video
-- Show frame-by-frame analysis
-- Display network of 187 coordinated accounts
-- Generate PDF incident report
-
-### Scenario 2: Audio Clone Campaign
-- Detect synthetic voice impersonation
-- Map cross-platform amplification
-- Show timing synchronization
-- Alert newsroom via webhook
-
-### Scenario 3: Coordinated Meme Network
-- Identify doctored image spread
-- Reveal 234 coordinated bot accounts
-- Display reused content hashes
-- Suggest debunk message
-
----
-
-## 👥 Target Users
-
-- **Journalists** — Rapid alerts with evidence for investigation
-- **Fact-checkers** — Structured incident dossiers
-- **Platform safety teams** — Priority moderation signals
-- **Election authorities** — Situational awareness during campaigns
-- **Public agencies** — Early warning for crisis response
-
----
-
-## 📈 Impact & Use Cases
-
-### During Elections
-- Detect coordinated disinformation before viral spread
-- Provide evidence for electoral commission investigations
-- Enable media to debunk false claims quickly
-
-### Health Crises
-- Identify medical misinformation campaigns
-- Track vaccine/treatment conspiracy networks
-- Support public health communication
-
-### Social Conflicts
-- Detect inflammatory deepfakes during tensions
-- Map coordination between provocateur accounts
-- Prevent violence escalation
-
----
-
-## 🏆 Competition: Mumbai Hacks 2025
-
-### Why This Project Matters
-Mumbai and India face significant challenges with coordinated misinformation during elections, civic issues, and social tensions. EchoBreaker provides a much-needed technological defense.
-
-### Innovation Points
-- **Agentic architecture** — Autonomous AI agents, not just detection
-- **Network-level analysis** — Goes beyond individual posts
-- **Multimodal fusion** — Video + Audio + Image + Text together
-- **Explainable forensics** — Human-readable evidence chains
-- **Real-world impact** — Directly addresses election/crisis needs
-
----
-
-## 📚 Documentation
-
-Complete documentation is available in the `/docs` folder:
-
-- **[PROBLEM_STATEMENT.md](./docs/PROBLEM_STATEMENT.md)** — Full problem definition
-- **[TECH_STACK.md](./docs/TECH_STACK.md)** — Technical architecture
-- **[PROJECT_ANALYSIS.md](./docs/PROJECT_ANALYSIS.md)** — Gap analysis & recommendations
-- **[MVP_CHECKLIST.md](./docs/MVP_CHECKLIST.md)** — Implementation roadmap
-
----
-
-## 🤝 Contributing
-
-This is a hackathon project for Mumbai Hacks 2025. Development is currently focused on the competition deadline.
-
----
-
-## 📄 License
-
-[MIT License](./LICENSE) (or specify your license)
-
----
-
-## 👨‍💻 Team
-
-**Project Lead**: aaryan2720  
-**Repository**: [echo-sentinel-agent](https://github.com/aaryan2720/echo-sentinel-agent)  
-**Competition**: Mumbai Hacks 2025
-
----
-
-## 🔗 Links
-
-- **Live Demo**: [Coming Soon]
-- **Pitch Deck**: [Coming Soon]
-- **Demo Video**: [Coming Soon]
-- **Devfolio**: [Coming Soon]
+- **Project Lead**: [@aaryan2720](https://github.com/aaryan2720)
+- **Repository**: [echo-sentinel-agent](https://github.com/aaryan2720/echo-sentinel-agent)
 
 ---
 
 <div align="center">
 
-**Built with ❤️ for a safer digital future**
-
-⭐ Star this repo if you believe in fighting misinformation with AI!
+**EchoBreaker — Securing the Digital Sphere Against Coordinated Misinformation.**
 
 </div>

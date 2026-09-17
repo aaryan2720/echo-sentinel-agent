@@ -239,89 +239,89 @@ export const InteractiveNetworkGraph = () => {
         <Controls className="bg-card border border-border rounded-lg" />
         
         <Panel position="top-left" className="bg-transparent">
-          <Card className="p-3 bg-card/95 backdrop-blur-sm border-primary/20">
-            <div className="space-y-2 text-xs font-mono">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-destructive/60" />
-                <span>Central Node (High Threat)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-warning/60" />
-                <span>Bot Account</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-accent/60" />
-                <span>Suspicious</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-primary/60" />
-                <span>Human (Verified)</span>
-              </div>
+          <div className="p-3 rounded-lg bg-card/90 backdrop-blur-md border border-border shadow-md space-y-1.5 text-xs">
+            <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider mb-1">Topology Legend</div>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-destructive" />
+              <span className="text-foreground font-medium">Central Seed (High Threat)</span>
             </div>
-          </Card>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-warning" />
+              <span className="text-foreground">Automated Bot Node</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-accent" />
+              <span className="text-foreground">Suspicious Amplifier</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-primary" />
+              <span className="text-foreground">Organic Account</span>
+            </div>
+          </div>
         </Panel>
 
         <Panel position="top-right" className="bg-transparent">
-          <Card className="p-3 bg-card/95 backdrop-blur-sm border-primary/20">
-            <div className="text-xs font-mono space-y-1">
-              <div className="font-bold text-primary">Network Stats</div>
-              <div>Total Nodes: {nodes.length}</div>
-              <div>Connections: {edges.length}</div>
-              <div>Bots Detected: {nodes.filter(n => n.data.type === 'bot').length}</div>
-              <div className="text-destructive font-bold mt-2">⚠️ Coordinated Activity</div>
+          <div className="p-3 rounded-lg bg-card/90 backdrop-blur-md border border-border shadow-md text-xs space-y-1">
+            <div className="font-bold text-primary flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+              GNN Telemetry
             </div>
-          </Card>
+            <div className="font-mono text-[11px] text-muted-foreground">Nodes: <span className="text-foreground">{nodes.length}</span></div>
+            <div className="font-mono text-[11px] text-muted-foreground">Edges: <span className="text-foreground">{edges.length}</span></div>
+            <div className="font-mono text-[11px] text-muted-foreground">Bots: <span className="text-destructive font-bold">{nodes.filter(n => n.data.type === 'bot').length}</span></div>
+            <div className="text-destructive font-bold text-[10px] pt-1 border-t border-border/40">⚠️ Active Synchronization</div>
+          </div>
         </Panel>
       </ReactFlow>
 
       {/* Node Details Sidebar */}
       {selectedNode && (
-        <div className="absolute right-4 bottom-4 w-80 animate-slide-in-right">
-          <Card className="p-4 bg-card/95 backdrop-blur-sm border-primary/20">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-bold text-foreground font-mono">Account Details</h3>
-              <Badge variant={selectedNode.data.threat === 'critical' ? 'destructive' : 'default'}>
-                {selectedNode.data.threat}
-              </Badge>
+        <div className="absolute right-4 bottom-4 w-80 animate-slide-in-right z-20">
+          <div className="p-4 rounded-xl bg-card/95 backdrop-blur-xl border border-primary/40 shadow-xl space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-border/50">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-foreground text-sm">{selectedNode.data.label}</span>
+                <Badge variant={selectedNode.data.threat === 'critical' ? 'destructive' : 'default'} className="text-[9px] uppercase font-mono">
+                  {selectedNode.data.threat}
+                </Badge>
+              </div>
+              <button
+                onClick={() => setSelectedNode(null)}
+                className="text-xs text-muted-foreground hover:text-foreground font-mono px-1 rounded hover:bg-muted"
+              >
+                ✕
+              </button>
             </div>
             
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground font-mono">Username:</span>
-                <span className="font-mono font-bold">{selectedNode.data.label}</span>
+            <div className="space-y-1.5 text-xs">
+              <div className="flex justify-between py-0.5">
+                <span className="text-muted-foreground">Classification:</span>
+                <span className="font-mono font-medium capitalize text-foreground">{selectedNode.data.type}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground font-mono">Type:</span>
-                <span className="font-mono capitalize">{selectedNode.data.type}</span>
+              <div className="flex justify-between py-0.5">
+                <span className="text-muted-foreground">Post Volume:</span>
+                <span className="font-mono text-primary font-bold">{selectedNode.data.posts}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground font-mono">Posts:</span>
-                <span className="font-mono">{selectedNode.data.posts}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground font-mono">Followers:</span>
-                <span className="font-mono">{selectedNode.data.followers?.toLocaleString()}</span>
+              <div className="flex justify-between py-0.5">
+                <span className="text-muted-foreground">Followers:</span>
+                <span className="font-mono text-foreground">{selectedNode.data.followers?.toLocaleString()}</span>
               </div>
               
               {selectedNode.data.type === 'bot' && (
-                <div className="mt-3 p-2 bg-destructive/10 rounded border border-destructive/30">
-                  <p className="text-xs text-destructive font-mono">
-                    <AlertCircle className="w-3 h-3 inline mr-1" />
-                    Bot behavior detected: Synchronized posting pattern
-                  </p>
+                <div className="mt-2 p-2 bg-destructive/10 rounded-lg border border-destructive/25 text-[11px] text-destructive">
+                  <AlertCircle className="w-3 h-3 inline mr-1" />
+                  Bot behavior detected: Synchronized template broadcast
                 </div>
               )}
               
               {selectedNode.data.type === 'central' && (
-                <div className="mt-3 p-2 bg-destructive/10 rounded border border-destructive/30">
-                  <p className="text-xs text-destructive font-mono">
-                    <AlertCircle className="w-3 h-3 inline mr-1" />
-                    Central node: Controls {edges.filter(e => e.source === selectedNode.id).length} connected accounts
-                  </p>
+                <div className="mt-2 p-2 bg-destructive/10 rounded-lg border border-destructive/25 text-[11px] text-destructive">
+                  <AlertCircle className="w-3 h-3 inline mr-1" />
+                  Central hub: Coordinates {edges.filter(e => e.source === selectedNode.id).length} amplifier nodes
                 </div>
               )}
             </div>
-          </Card>
+          </div>
         </div>
       )}
     </div>
