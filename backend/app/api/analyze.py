@@ -4,7 +4,7 @@ Analysis API endpoints
 from fastapi import APIRouter, UploadFile, File, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, HttpUrl
-from loguru import logger
+import logging
 import tempfile
 import os
 from pathlib import Path
@@ -17,6 +17,7 @@ from app.config import get_settings
 
 router = APIRouter()
 settings = get_settings()
+logger = logging.getLogger(__name__)
 
 
 class VideoURLRequest(BaseModel):

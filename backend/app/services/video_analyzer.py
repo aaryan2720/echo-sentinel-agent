@@ -3,7 +3,7 @@ VideoMAE-based deepfake detection service
 """
 import torch
 from transformers import VideoMAEForVideoClassification, VideoMAEImageProcessor
-from loguru import logger
+import logging
 import av
 import numpy as np
 from typing import Dict, Any, Optional
@@ -24,9 +24,10 @@ class VideoAnalyzer:
         self.settings = get_settings()
         self.model_name = self.settings.video_model_name
         self.device = "cuda" if torch.cuda.is_available() and self.settings.use_gpu else "cpu"
+        self.logger = logging.getLogger(__name__)
         
-        logger.info(f"🎬 Initializing VideoAnalyzer with {self.model_name}")
-        logger.info(f"🔧 Device: {self.device}")
+        self.logger.info(f"🎬 Initializing VideoAnalyzer with {self.model_name}")
+        self.logger.info(f"🔧 Device: {self.device}")
         
         self.model: Optional[VideoMAEForVideoClassification] = None
         self.processor: Optional[VideoMAEImageProcessor] = None
@@ -36,37 +37,37 @@ class VideoAnalyzer:
     def _load_model(self):
         """Load VideoMAE model and processor with fallback"""
         try:
-            logger.info(f"📥 Loading model: {self.model_name}")
+            self.logger.info(f"📥 Loading model: {self.model_name}")
             
             # Try to load the VideoMAE model
             try:
                 # Try to load the processor with error handling
                 try:
                     self.processor = VideoMAEImageProcessor.from_pretrained(self.model_name)
-                    logger.info(f"🔍 Processor config - size: {self.processor.size}")
+                    self.logger.info(f"🔍 Processor config - size: {self.processor.size}")
                 except Exception as e:
-                    logger.warning(f"⚠️ Failed to load specific processor: {e}")
-                    logger.info("🔄 Falling back to Microsoft VideoMAE processor")
+                    self.logger.warning(f"⚠️ Failed to load specific processor: {e}")
+                    self.logger.info("🔄 Falling back to Microsoft VideoMAE processor")
                     # Fallback to base VideoMAE processor
                     self.processor = VideoMAEImageProcessor.from_pretrained("MCG-NJU/videomae-base")
-                    logger.info(f"🔍 Fallback processor size: {self.processor.size}")
+                    self.logger.info(f"🔍 Fallback processor size: {self.processor.size}")
                 
                 # Load model
                 self.model = VideoMAEForVideoClassification.from_pretrained(self.model_name)
                 self.model.to(self.device)
                 self.model.eval()  # Set to evaluation mode
                 
-                logger.success(f"✅ VideoMAE model loaded successfully on {self.device}")
+                self.logger.info(f"✅ VideoMAE model loaded successfully on {self.device}")
                 self.use_fallback = False
                 
             except Exception as video_error:
-                logger.error(f"❌ VideoMAE model failed: {video_error}")
-                logger.info("🔄 Switching to image-based fallback approach")
+                self.logger.error(f"❌ VideoMAE model failed: {video_error}")
+                self.logger.info("🔄 Switching to image-based fallback approach")
                 self.use_fallback = True
                 self._load_image_model()
             
         except Exception as e:
-            logger.error(f"❌ Failed to load any model: {e}")
+            self.logger.error(f"❌ Failed to load any model: {e}")
             raise
     
     def _load_image_model(self):
@@ -77,17 +78,17 @@ class VideoAnalyzer:
             # Use a reliable image-based deepfake detector
             fallback_model = "dima806/deepfake_vs_real_image_detection"
             
-            logger.info(f"📥 Loading fallback image model: {fallback_model}")
+            self.logger.info(f"📥 Loading fallback image model: {fallback_model}")
             
             self.processor = AutoImageProcessor.from_pretrained(fallback_model)
             self.model = AutoModelForImageClassification.from_pretrained(fallback_model)
             self.model.to(self.device)
             self.model.eval()
             
-            logger.success(f"✅ Fallback image model loaded successfully")
+            self.logger.info(f"✅ Fallback image model loaded successfully")
             
         except Exception as e:
-            logger.error(f"❌ Fallback model also failed: {e}")
+            self.logger.error(f"❌ Fallback model also failed: {e}")
             raise
     
     def extract_frames(self, video_path: str, num_frames: int = 16) -> np.ndarray:
@@ -105,8 +106,46 @@ class VideoAnalyzer:
             container = av.open(video_path)
             
             # Get video stream
-            video_stream = container.streams.video[0]
-            total_frames = video_stream.frames
+            video_streams = container.streams.video
+            if not video_streams:
+                raise ValueError("No video stream found in file")
+            
+            video_stream = video_streams[0]
+            
+            # Try to get frame count, with fallback for live streams or unknown counts
+            total_frames = getattr(video_stream, 'frames', None)
+            if total_frames is None or total_frames <= 0:
+                # If frame count is unknown, collect all frames first
+                self.logger.warning("Frame count unknown, collecting all frames first...")
+                all_frames = []
+                for frame in container.decode(video=0):
+                    img = frame.to_ndarray(format='rgb24')
+                    all_frames.append(img)
+                
+                container.close()
+                
+                if not all_frames:
+                    raise ValueError("No frames could be extracted from video")
+                
+                total_frames = len(all_frames)
+                self.logger.info(f"📊 Collected {total_frames} frames from video")
+                
+                # Select frames uniformly
+                if total_frames <= num_frames:
+                    selected_frames = all_frames[:]
+                    # Pad if needed
+                    while len(selected_frames) < num_frames:
+                        selected_frames.append(selected_frames[-1])
+                else:
+                    indices = np.linspace(0, total_frames - 1, num_frames, dtype=int)
+                    selected_frames = [all_frames[i] for i in indices]
+                
+                frames_array = np.stack(selected_frames)
+                self.logger.debug(f"📸 Extracted {len(selected_frames)} frames from video (shape: {frames_array.shape})")
+                return frames_array
+            
+            # Original logic for when we know the frame count
+            self.logger.info(f"📊 Video has {total_frames} total frames")
             
             # Calculate frame indices to extract
             if total_frames < num_frames:
@@ -136,15 +175,22 @@ class VideoAnalyzer:
             
             container.close()
             
+            if not frames:
+                raise ValueError("No frames could be extracted from video")
+            
+            # Pad if we didn't get enough frames
+            while len(frames) < num_frames:
+                frames.append(frames[-1])
+            
             # Stack frames into array
             frames_array = np.stack(frames)
             
-            logger.debug(f"📸 Extracted {len(frames)} frames from video (shape: {frames_array.shape})")
+            self.logger.debug(f"📸 Extracted {len(frames)} frames from video (shape: {frames_array.shape})")
             
             return frames_array
             
         except Exception as e:
-            logger.error(f"❌ Frame extraction failed: {e}")
+            self.logger.error(f"❌ Frame extraction failed: {e}")
             raise
     
     async def analyze_video(self, video_path: str) -> Dict[str, Any]:
@@ -155,7 +201,7 @@ class VideoAnalyzer:
         start_time = time.time()
         
         try:
-            logger.info(f"🎬 Analyzing video: {video_path}")
+            self.logger.info(f"🎬 Analyzing video: {video_path}")
             
             if self.use_fallback:
                 return await self._analyze_video_with_images(video_path, start_time)
@@ -163,15 +209,15 @@ class VideoAnalyzer:
                 return await self._analyze_video_with_videomae(video_path, start_time)
                 
         except Exception as e:
-            logger.error(f"❌ Video analysis failed: {e}")
+            self.logger.error(f"❌ Video analysis failed: {e}")
             if not self.use_fallback:
-                logger.info("🔄 Trying fallback image analysis")
+                self.logger.info("🔄 Trying fallback image analysis")
                 try:
                     self.use_fallback = True
                     self._load_image_model()
                     return await self._analyze_video_with_images(video_path, start_time)
                 except Exception as fallback_error:
-                    logger.error(f"❌ Fallback also failed: {fallback_error}")
+                    self.logger.error(f"❌ Fallback also failed: {fallback_error}")
             raise
     
     async def _analyze_video_with_videomae(self, video_path: str, start_time: float) -> Dict[str, Any]:
@@ -182,11 +228,11 @@ class VideoAnalyzer:
         
         # Convert numpy arrays to PIL Images
         pil_frames = [Image.fromarray(frame) for frame in frames]
-        logger.debug(f"🖼️  Converted {len(pil_frames)} frames to PIL Images")
+        self.logger.debug(f"🖼️  Converted {len(pil_frames)} frames to PIL Images")
         
         # Preprocess for VideoMAE
         inputs = self.processor(pil_frames, return_tensors="pt")
-        logger.debug(f"✅ VideoMAE preprocessing - shape: {inputs['pixel_values'].shape}")
+        self.logger.debug(f"✅ VideoMAE preprocessing - shape: {inputs['pixel_values'].shape}")
         
         # Move to device
         inputs = {k: v.to(self.device) for k, v in inputs.items()}
@@ -214,7 +260,7 @@ class VideoAnalyzer:
             # If neither class has high confidence, default to REAL (conservative approach)
             verdict = "REAL"
             confidence = real_prob
-            logger.info(f"⚠️ Low confidence prediction - defaulting to REAL (fake: {fake_prob:.3f}, real: {real_prob:.3f})")
+            self.logger.info(f"⚠️ Low confidence prediction - defaulting to REAL (fake: {fake_prob:.3f}, real: {real_prob:.3f})")
         
         processing_time = time.time() - start_time
         
@@ -232,7 +278,7 @@ class VideoAnalyzer:
             "threshold_used": confidence_threshold
         }
         
-        logger.success(f"✅ VideoMAE analysis: {verdict} ({confidence:.2%}) in {processing_time:.2f}s")
+        self.logger.info(f"✅ VideoMAE analysis: {verdict} ({confidence:.2%}) in {processing_time:.2f}s")
         return result
     
     async def _analyze_video_with_images(self, video_path: str, start_time: float) -> Dict[str, Any]:
@@ -279,7 +325,7 @@ class VideoAnalyzer:
             "frame_analysis": [round(prob, 4) for prob in frame_results]
         }
         
-        logger.success(f"✅ Image analysis: {verdict} ({confidence:.2%}) in {processing_time:.2f}s")
+        self.logger.info(f"✅ Image analysis: {verdict} ({confidence:.2%}) in {processing_time:.2f}s")
         return result
 
 
