@@ -15,6 +15,11 @@ export const DemoBanner = () => {
             <div className="flex items-center gap-2 animate-pulse">
               <AlertCircle className="w-5 h-5 text-primary" />
             </div>
+            <p className="text-sm font-mono text-foreground">
+              <span className="font-bold text-primary">🎯 DEMO MODE</span> — 
+              Full access to all features • No login required • 
+              <span className="text-accent ml-1">Mumbai Hacks 2025</span>
+            </p>
           </div>
           <Button
             variant="ghost"
