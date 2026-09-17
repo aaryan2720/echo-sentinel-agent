@@ -88,3 +88,5 @@ export {
   BreadcrumbSeparator,
   BreadcrumbEllipsis,
 };
+
+// EchoBreaker Sentinel (AI-03)

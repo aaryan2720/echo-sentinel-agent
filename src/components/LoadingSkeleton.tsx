@@ -56,3 +56,5 @@ export const TableLoadingSkeleton = ({ rows = 5 }: { rows?: number }) => {
     </div>
   );
 };
+
+// EchoBreaker Sentinel (AI-03)

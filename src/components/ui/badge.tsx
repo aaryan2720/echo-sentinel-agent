@@ -27,3 +27,5 @@ function Badge({ className, variant, ...props }: BadgeProps) {
 }
 
 export { Badge, badgeVariants };
+
+// EchoBreaker Sentinel (AI-03)

@@ -60,3 +60,5 @@ The system combines:
 **EchoBreaker — Engineering Trust and Truth in the Digital Age.**
 
 </div>
+
+<!-- EchoBreaker Sentinel (AI-03) -->

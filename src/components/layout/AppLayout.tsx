@@ -97,3 +97,5 @@ export function AppLayout({
     </div>
   );
 }
+
+// EchoBreaker Sentinel (AI-03)

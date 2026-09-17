@@ -167,3 +167,5 @@ npm run build
 ---
 
 **Let's ship it! 🚀**
+
+<!-- EchoBreaker Sentinel (AI-03) -->

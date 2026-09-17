@@ -140,3 +140,5 @@ class DeepfakeAPIService {
 // Export singleton instance
 export const deepfakeAPI = new DeepfakeAPIService();
 export type { AnalysisResult };
+
+// EchoBreaker Sentinel (AI-03)

@@ -184,3 +184,5 @@ function useToast() {
 }
 
 export { useToast, toast };
+
+// EchoBreaker Sentinel (AI-03)

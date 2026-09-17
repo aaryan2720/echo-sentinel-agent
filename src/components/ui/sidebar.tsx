@@ -635,3 +635,5 @@ export {
   SidebarTrigger,
   useSidebar,
 };
+
+// EchoBreaker Sentinel (AI-03)

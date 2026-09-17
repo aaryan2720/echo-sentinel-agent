@@ -26,3 +26,5 @@ export { agentConfig, type AgentConfig as AgentSystemConfig } from './config';
 // export { ContentIngestionAgent } from './ContentIngestionAgent';
 // export { AgentCoordinator } from './AgentCoordinator';
 // export { HumanReviewRouter } from './HumanReviewRouter';
+
+// EchoBreaker Sentinel (AI-03)

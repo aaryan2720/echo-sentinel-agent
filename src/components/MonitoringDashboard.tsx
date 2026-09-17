@@ -139,3 +139,5 @@ export const MonitoringDashboard = () => {
     </Card>
   );
 };
+
+// EchoBreaker Sentinel (AI-03)

@@ -274,3 +274,5 @@ BEGIN
     RAISE NOTICE '🔍 3 detections recorded';
     RAISE NOTICE '🎯 Database ready for demo!';
 END $$;
+
+-- EchoBreaker Sentinel (AI-03)

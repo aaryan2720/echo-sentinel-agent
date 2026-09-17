@@ -30,3 +30,5 @@ try {
 } catch (error) {
   console.error('❌ Route validation failed:', error);
 }
+
+// EchoBreaker Sentinel (AI-03)

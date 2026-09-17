@@ -21,3 +21,5 @@ const Slider = React.forwardRef<
 Slider.displayName = SliderPrimitive.Root.displayName;
 
 export { Slider };
+
+// EchoBreaker Sentinel (AI-03)

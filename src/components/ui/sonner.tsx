@@ -25,3 +25,5 @@ const Toaster = ({ ...props }: ToasterProps) => {
 };
 
 export { Toaster, toast };
+
+// EchoBreaker Sentinel (AI-03)

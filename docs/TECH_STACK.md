@@ -234,3 +234,5 @@ backend/
 ├── config/                # Configuration files
 └── tests/                 # Test suites
 ```
+
+<!-- EchoBreaker Sentinel (AI-03) -->

@@ -485,3 +485,5 @@ extension/
 **Want me to help you build a quick extension prototype for the demo?** 
 
 It's the same code you already have, just packaged differently! 💪
+
+<!-- EchoBreaker Sentinel (AI-03) -->

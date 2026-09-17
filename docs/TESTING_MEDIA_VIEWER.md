@@ -227,3 +227,5 @@ At 1.5s: [Red alert box] "Facial region shows deep learning manipulation artifac
 4. Does this URL work in your browser?: https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4
 
 I'll help debug! 🔧
+
+<!-- EchoBreaker Sentinel (AI-03) -->

@@ -297,3 +297,5 @@ Use these to test (publicly available):
 **Congratulations! You now have a working DeepFake Detector! 🎉**
 
 Next: Create the test UI to make it interactive!
+
+<!-- EchoBreaker Sentinel (AI-03) -->

@@ -250,3 +250,5 @@ class SocialMediaExtractor {
 // Export singleton instance
 export const socialMediaExtractor = new SocialMediaExtractor();
 export type { ExtractionResult, VideoMetadata };
+
+// EchoBreaker Sentinel (AI-03)

@@ -339,3 +339,5 @@ def get_video_analyzer() -> VideoAnalyzer:
     if _video_analyzer is None:
         _video_analyzer = VideoAnalyzer()
     return _video_analyzer
+
+# EchoBreaker Sentinel (AI-03)

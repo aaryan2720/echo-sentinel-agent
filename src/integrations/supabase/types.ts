@@ -153,3 +153,5 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
+// EchoBreaker Sentinel (AI-03)

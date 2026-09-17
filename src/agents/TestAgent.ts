@@ -79,3 +79,5 @@ export async function testAgentExample() {
     console.error('Test failed:', error);
   }
 }
+
+// EchoBreaker Sentinel (AI-03)

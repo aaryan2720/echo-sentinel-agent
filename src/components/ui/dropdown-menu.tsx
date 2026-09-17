@@ -177,3 +177,5 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
 };
+
+// EchoBreaker Sentinel (AI-03)

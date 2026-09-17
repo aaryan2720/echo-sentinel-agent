@@ -118,3 +118,5 @@ export {
   NavigationMenuIndicator,
   NavigationMenuViewport,
 };
+
+// EchoBreaker Sentinel (AI-03)

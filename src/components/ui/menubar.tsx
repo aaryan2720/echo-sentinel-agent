@@ -205,3 +205,5 @@ export {
   MenubarSub,
   MenubarShortcut,
 };
+
+// EchoBreaker Sentinel (AI-03)

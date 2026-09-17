@@ -105,3 +105,5 @@ export {
   SheetTitle,
   SheetTrigger,
 };
+
+// EchoBreaker Sentinel (AI-03)

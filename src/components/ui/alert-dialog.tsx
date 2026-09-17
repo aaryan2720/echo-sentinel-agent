@@ -102,3 +102,5 @@ export {
   AlertDialogAction,
   AlertDialogCancel,
 };
+
+// EchoBreaker Sentinel (AI-03)

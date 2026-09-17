@@ -444,3 +444,5 @@ def get_incident_generator() -> IncidentGenerator:
     if _incident_generator is None:
         _incident_generator = IncidentGenerator()
     return _incident_generator
+
+# EchoBreaker Sentinel (AI-03)

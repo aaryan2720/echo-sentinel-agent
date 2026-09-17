@@ -344,3 +344,5 @@ export async function testConnection() {
     }
   }
 }
+
+// EchoBreaker Sentinel (AI-03)

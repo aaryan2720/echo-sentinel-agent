@@ -640,3 +640,5 @@ export async function testVisualAgent() {
   await agent.stop();
   console.log('✅ Visual Analysis Agent test complete!');
 }
+
+// EchoBreaker Sentinel (AI-03)

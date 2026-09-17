@@ -16,3 +16,5 @@ export const testRoutes = [
 
 // Add this to your browser console to test navigation:
 // window.location.hash = '/dashboard'
+
+// EchoBreaker Sentinel (AI-03)

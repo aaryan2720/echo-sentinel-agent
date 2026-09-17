@@ -182,3 +182,5 @@ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 **EchoBreaker Backend Engine — Powered by FastAPI & PyTorch**
 
 </div>
+
+<!-- EchoBreaker Sentinel (AI-03) -->

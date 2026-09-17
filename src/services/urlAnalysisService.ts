@@ -257,3 +257,5 @@ class URLAnalysisService {
 // Export singleton instance
 export const urlAnalysisService = new URLAnalysisService();
 export type { URLAnalysisResult, BatchAnalysisProgress };
+
+// EchoBreaker Sentinel (AI-03)

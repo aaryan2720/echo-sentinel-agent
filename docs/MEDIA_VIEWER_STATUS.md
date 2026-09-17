@@ -249,3 +249,5 @@ When showing to judges:
 **Test it now and let me know!** 🚀
 
 What do you see when you click "View Evidence"?
+
+<!-- EchoBreaker Sentinel (AI-03) -->

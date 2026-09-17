@@ -151,3 +151,5 @@ export default {
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+
+// EchoBreaker Sentinel (AI-03)

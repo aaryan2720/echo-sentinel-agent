@@ -464,3 +464,5 @@ export const AgentCommunicationViz: React.FC = () => {
     </div>
   );
 };
+
+// EchoBreaker Sentinel (AI-03)

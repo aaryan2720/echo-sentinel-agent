@@ -22,3 +22,5 @@ export function Toaster() {
     </ToastProvider>
   );
 }
+
+// EchoBreaker Sentinel (AI-03)

@@ -155,3 +155,5 @@ https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4
 **Videos**: Slow, complex, optional ⚠️
 
 **Winner for hackathon**: Images! 🏆
+
+<!-- EchoBreaker Sentinel (AI-03) -->

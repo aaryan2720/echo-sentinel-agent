@@ -84,3 +84,5 @@ export const AnimatedProgress = ({
     </div>
   );
 };
+
+// EchoBreaker Sentinel (AI-03)

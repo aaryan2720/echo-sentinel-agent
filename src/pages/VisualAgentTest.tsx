@@ -430,3 +430,5 @@ export default function VisualAgentTest() {
     </AppLayout>
   );
 }
+
+// EchoBreaker Sentinel (AI-03)

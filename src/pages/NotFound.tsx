@@ -73,3 +73,5 @@ export default function NotFound() {
     </div>
   );
 }
+
+// EchoBreaker Sentinel (AI-03)

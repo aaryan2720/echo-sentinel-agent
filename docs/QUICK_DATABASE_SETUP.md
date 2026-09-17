@@ -37,3 +37,5 @@ Test: Visit `/db-test` to verify connection
 ---
 
 **Full Guide**: See `docs/DATABASE_SETUP.md`
+
+<!-- EchoBreaker Sentinel (AI-03) -->

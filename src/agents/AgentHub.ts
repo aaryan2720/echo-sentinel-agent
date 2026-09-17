@@ -311,3 +311,5 @@ export class AgentHub {
 
 // Export singleton instance
 export const agentHub = AgentHub.getInstance();
+
+// EchoBreaker Sentinel (AI-03)

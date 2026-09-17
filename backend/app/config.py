@@ -41,3 +41,5 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     """Cached settings instance"""
     return Settings()
+
+# EchoBreaker Sentinel (AI-03)

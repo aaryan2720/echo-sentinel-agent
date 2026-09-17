@@ -181,3 +181,5 @@ class VideoExtractor:
 
 # Global instance
 video_extractor = VideoExtractor()
+
+# EchoBreaker Sentinel (AI-03)

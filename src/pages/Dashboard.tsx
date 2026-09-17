@@ -324,3 +324,5 @@ export default function Dashboard() {
     </AppLayout>
   );
 }
+
+// EchoBreaker Sentinel (AI-03)

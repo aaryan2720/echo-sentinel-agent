@@ -109,3 +109,5 @@ export {
   ToastClose,
   ToastAction,
 };
+
+// EchoBreaker Sentinel (AI-03)

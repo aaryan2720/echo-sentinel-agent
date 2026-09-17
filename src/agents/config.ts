@@ -169,3 +169,5 @@ export type NetworkAnalysisConfig = typeof agentConfig.networkAnalysis;
 export type ContentIngestionConfig = typeof agentConfig.contentIngestion;
 export type CoordinatorConfig = typeof agentConfig.coordinator;
 export type HumanReviewConfig = typeof agentConfig.humanReview;
+
+// EchoBreaker Sentinel (AI-03)

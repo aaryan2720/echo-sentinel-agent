@@ -93,3 +93,5 @@ export {
   DialogTitle,
   DialogDescription,
 };
+
+// EchoBreaker Sentinel (AI-03)

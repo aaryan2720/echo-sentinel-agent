@@ -415,3 +415,5 @@ export function EnhancedDashboardOverview() {
     </div>
   );
 }
+
+// EchoBreaker Sentinel (AI-03)

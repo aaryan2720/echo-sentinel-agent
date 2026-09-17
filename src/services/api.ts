@@ -179,3 +179,5 @@ class APIService {
 // Export singleton instance
 export const api = new APIService();
 export default api;
+
+// EchoBreaker Sentinel (AI-03)

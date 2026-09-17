@@ -38,3 +38,5 @@ const Index = () => {
 };
 
 export default Index;
+
+// EchoBreaker Sentinel (AI-03)

@@ -24,3 +24,5 @@ export default tseslint.config(
     },
   },
 );
+
+// EchoBreaker Sentinel (AI-03)

@@ -348,3 +348,5 @@ After database setup:
 
 **📚 Full Setup Guide**: See `docs/DATABASE_SETUP.md`  
 **⚡ Quick Start**: See `docs/QUICK_DATABASE_SETUP.md`
+
+<!-- EchoBreaker Sentinel (AI-03) -->

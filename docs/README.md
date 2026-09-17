@@ -77,3 +77,5 @@ echo-sentinel-agent/
 **EchoBreaker Sentinel SOC — Complete Documentation**
 
 </div>
+
+<!-- EchoBreaker Sentinel (AI-03) -->

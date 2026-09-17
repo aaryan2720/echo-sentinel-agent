@@ -190,3 +190,5 @@ Your demo is **READY** if:
 4. **Backup plan** → Record demo video in case WiFi fails
 
 **Time to demo-ready**: 30 minutes 🎯
+
+<!-- EchoBreaker Sentinel (AI-03) -->

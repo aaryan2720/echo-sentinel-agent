@@ -494,3 +494,5 @@ def get_instagram_monitor() -> InstagramMonitor:
     if _instagram_monitor is None:
         _instagram_monitor = InstagramMonitor()
     return _instagram_monitor
+
+# EchoBreaker Sentinel (AI-03)

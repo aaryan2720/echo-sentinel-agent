@@ -90,3 +90,5 @@ export const HeroSection = () => {
     </section>
   );
 };
+
+// EchoBreaker Sentinel (AI-03)

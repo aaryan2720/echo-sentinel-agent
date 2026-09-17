@@ -44,3 +44,5 @@ export const useNotification = () => {
     showInfo,
   };
 };
+
+// EchoBreaker Sentinel (AI-03)

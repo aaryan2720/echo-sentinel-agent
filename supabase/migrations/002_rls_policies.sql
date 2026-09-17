@@ -227,3 +227,5 @@ BEGIN
     RAISE NOTICE '🔐 Authenticated users: Can create and update most records';
     RAISE NOTICE '⚙️ Service role: Full access for backend operations';
 END $$;
+
+-- EchoBreaker Sentinel (AI-03)

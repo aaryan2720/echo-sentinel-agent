@@ -479,3 +479,5 @@ Build a tool that helps people **fight misinformation**.
 ```
 
 **Copy this to a daily log file and track your progress!**
+
+<!-- EchoBreaker Sentinel (AI-03) -->

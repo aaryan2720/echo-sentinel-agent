@@ -22,3 +22,5 @@ export const Logo = ({ className = "" }: { className?: string }) => {
     </div>
   );
 };
+
+// EchoBreaker Sentinel (AI-03)

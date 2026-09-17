@@ -346,3 +346,5 @@ export function AppNavbar({
     </header>
   );
 }
+
+// EchoBreaker Sentinel (AI-03)

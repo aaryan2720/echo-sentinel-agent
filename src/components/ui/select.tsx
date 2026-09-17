@@ -141,3 +141,5 @@ export {
   SelectScrollUpButton,
   SelectScrollDownButton,
 };
+
+// EchoBreaker Sentinel (AI-03)

@@ -105,3 +105,5 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 **EchoBreaker Sentinel — Autonomous Intelligence Against Digital Misinformation**
 
 </div>
+
+<!-- EchoBreaker Sentinel (AI-03) -->

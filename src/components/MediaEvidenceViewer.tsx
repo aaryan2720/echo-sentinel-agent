@@ -602,3 +602,5 @@ export function MediaEvidenceViewer({
     </div>
   );
 }
+
+// EchoBreaker Sentinel (AI-03)

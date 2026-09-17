@@ -38,3 +38,5 @@ async function testConnection() {
 }
 
 testConnection();
+
+// EchoBreaker Sentinel (AI-03)

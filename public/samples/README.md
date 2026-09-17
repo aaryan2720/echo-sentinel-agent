@@ -28,3 +28,5 @@ Place testing media files in the `/public/samples/` folder:
 - `sample-image.jpg`
 
 Reference them via relative URL: `/samples/sample-video.mp4` in incidents and media analyzer flows.
+
+<!-- EchoBreaker Sentinel (AI-03) -->

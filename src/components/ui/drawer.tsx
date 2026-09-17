@@ -85,3 +85,5 @@ export {
   DrawerTitle,
   DrawerDescription,
 };
+
+// EchoBreaker Sentinel (AI-03)

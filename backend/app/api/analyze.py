@@ -340,3 +340,5 @@ async def get_models():
             "platforms": len(video_extractor.get_supported_platforms())
         }
     }
+
+# EchoBreaker Sentinel (AI-03)

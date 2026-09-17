@@ -36,3 +36,5 @@ const AvatarFallback = React.forwardRef<
 AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName;
 
 export { Avatar, AvatarImage, AvatarFallback };
+
+// EchoBreaker Sentinel (AI-03)

@@ -47,3 +47,5 @@ const ToggleGroupItem = React.forwardRef<
 ToggleGroupItem.displayName = ToggleGroupPrimitive.Item.displayName;
 
 export { ToggleGroup, ToggleGroupItem };
+
+// EchoBreaker Sentinel (AI-03)

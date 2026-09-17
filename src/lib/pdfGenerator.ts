@@ -194,3 +194,5 @@ export const generateIncidentPDF = (incident: IncidentData) => {
   // Save the PDF
   doc.save(`incident-report-${incident.id}.pdf`);
 };
+
+// EchoBreaker Sentinel (AI-03)

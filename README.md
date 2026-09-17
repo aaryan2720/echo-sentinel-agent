@@ -283,3 +283,5 @@ echo-sentinel-agent/
 **EchoBreaker — Securing the Digital Sphere Against Coordinated Misinformation.**
 
 </div>
+
+<!-- EchoBreaker Sentinel (AI-03) -->

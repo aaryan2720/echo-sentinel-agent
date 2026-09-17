@@ -36,3 +36,5 @@ export const EmptyState = ({
     </Card>
   );
 };
+
+// EchoBreaker Sentinel (AI-03)

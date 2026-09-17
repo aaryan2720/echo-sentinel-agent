@@ -219,3 +219,5 @@ If you want to add auth later:
 **📌 Decision**: Demo Mode ✅  
 **📌 Status**: Implemented  
 **📌 Next Step**: Complete database setup from checklist
+
+<!-- EchoBreaker Sentinel (AI-03) -->

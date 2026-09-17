@@ -53,3 +53,5 @@ const App = () => (
 );
 
 export default App;
+
+// EchoBreaker Sentinel (AI-03)

@@ -4,3 +4,5 @@ export default {
     autoprefixer: {},
   },
 };
+
+// EchoBreaker Sentinel (AI-03)

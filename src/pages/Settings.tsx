@@ -295,3 +295,5 @@ export default function Settings() {
     </AppLayout>
   );
 }
+
+// EchoBreaker Sentinel (AI-03)

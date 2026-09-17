@@ -17,3 +17,5 @@ export function useIsMobile() {
 
   return !!isMobile;
 }
+
+// EchoBreaker Sentinel (AI-03)

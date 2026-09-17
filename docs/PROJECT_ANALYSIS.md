@@ -422,3 +422,5 @@ async def websocket_endpoint(websocket: WebSocket):
 7. Prepare pitch and demo script
 
 **You're 60-70% there. The UI is fantastic — now bring it to life with a backend!**
+
+<!-- EchoBreaker Sentinel (AI-03) -->

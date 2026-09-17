@@ -353,3 +353,5 @@ BEGIN
     RAISE NOTICE '🔒 Row Level Security policies should be configured next';
     RAISE NOTICE '📦 Storage buckets should be created: media-evidence, generated-reports';
 END $$;
+
+-- EchoBreaker Sentinel (AI-03)

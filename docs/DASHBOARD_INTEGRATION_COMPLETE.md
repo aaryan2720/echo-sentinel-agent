@@ -190,3 +190,5 @@ For any future development:
 5. **Test accessibility from Dashboard**
 
 This ensures every new capability is immediately discoverable and accessible! ✨
+
+<!-- EchoBreaker Sentinel (AI-03) -->

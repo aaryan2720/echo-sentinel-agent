@@ -366,3 +366,5 @@ The judges want to see:
 4. **WHO** uses it (show journalist workflow)
 
 Your cold UI gives you a 70-80% head start. Adding these elements will make it competition-ready! 🏆
+
+<!-- EchoBreaker Sentinel (AI-03) -->
