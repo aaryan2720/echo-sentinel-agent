@@ -68,6 +68,7 @@ class InstagramMonitor:
         
         # Monitoring state
         self.active_jobs: Dict[str, MonitoringJob] = {}
+        self.job_tasks: Dict[str, asyncio.Task] = {}
         self.last_scan_times: Dict[str, datetime] = {}
         self.rate_limit_reset: Optional[datetime] = None
         
@@ -108,8 +109,9 @@ class InstagramMonitor:
         self.logger.info(f"🎯 Started Instagram monitoring for hashtags: {hashtags}")
         self.logger.info(f"📊 Job ID: {job_id}")
         
-        # Start monitoring in background
-        asyncio.create_task(self._monitor_hashtags(job))
+        # Start monitoring in background and track task reference
+        task = asyncio.create_task(self._monitor_hashtags(job))
+        self.job_tasks[job_id] = task
         
         return job_id
     
@@ -117,6 +119,13 @@ class InstagramMonitor:
         """Stop a monitoring job"""
         if job_id in self.active_jobs:
             self.active_jobs[job_id].is_active = False
+            task = self.job_tasks.pop(job_id, None)
+            if task and not task.done():
+                task.cancel()
+                try:
+                    await asyncio.sleep(0)  # Yield control to let cancellation propagate
+                except Exception:
+                    pass
             self.logger.info(f"⏹️  Stopped Instagram monitoring job: {job_id}")
             return True
         return False
@@ -125,29 +134,45 @@ class InstagramMonitor:
         """Main monitoring loop for a specific job"""
         self.logger.info(f"🔄 Starting monitoring loop for job {job.id}")
         
-        while job.is_active:
-            try:
-                # Scan each hashtag
-                for hashtag in job.hashtags:
-                    if not job.is_active:
-                        break
+        try:
+            while job.is_active:
+                try:
+                    # Scan each hashtag
+                    for hashtag in job.hashtags:
+                        if not job.is_active:
+                            break
+                        
+                        await self._scan_hashtag(job, hashtag)
+                        
+                        # Rate limiting between hashtags with early exit
+                        for _ in range(5):
+                            if not job.is_active:
+                                break
+                            await asyncio.sleep(1)
                     
-                    await self._scan_hashtag(job, hashtag)
+                    # Update job stats
+                    job.last_scan = datetime.now()
                     
-                    # Rate limiting between hashtags
-                    await asyncio.sleep(5)
-                
-                # Update job stats
-                job.last_scan = datetime.now()
-                
-                # Wait before next scan cycle (15 minutes)
-                scan_interval = 900  # 15 minutes
-                self.logger.info(f"💤 Waiting {scan_interval}s before next scan cycle")
-                await asyncio.sleep(scan_interval)
-                
-            except Exception as e:
-                self.logger.error(f"❌ Error in monitoring loop: {e}")
-                await asyncio.sleep(60)  # Wait 1 minute before retry
+                    # Wait before next scan cycle (15 minutes) with interruptible 1s intervals
+                    scan_interval = 900  # 15 minutes
+                    self.logger.info(f"💤 Waiting {scan_interval}s before next scan cycle")
+                    for _ in range(scan_interval):
+                        if not job.is_active:
+                            break
+                        await asyncio.sleep(1)
+                    
+                except asyncio.CancelledError:
+                    raise
+                except Exception as e:
+                    self.logger.error(f"❌ Error in monitoring loop: {e}")
+                    for _ in range(60):
+                        if not job.is_active:
+                            break
+                        await asyncio.sleep(1)
+        except asyncio.CancelledError:
+            self.logger.info(f"⏹️  Monitoring task cancelled for job {job.id}")
+        finally:
+            job.is_active = False
     
     async def _scan_hashtag(self, job: MonitoringJob, hashtag: str):
         """Scan a specific hashtag for new posts"""
