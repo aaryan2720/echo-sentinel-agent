@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { useNotification } from "@/hooks/use-notification";
 import { generateIncidentPDF } from "@/lib/pdfGenerator";
-import { getIncidents } from "@/lib/supabase";
+import { getIncidents, isSupabaseConfigured } from "@/lib/supabase";
+import { api } from "@/services/api";
 import { 
   FileText, 
   Download, 
@@ -35,7 +36,8 @@ import {
   AlertCircle,
   Loader2,
   Layers,
-  BarChart3
+  BarChart3,
+  RotateCw
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -48,6 +50,7 @@ export default function Incidents() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSeverity, setSelectedSeverity] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
+  const [updatingStatus, setUpdatingStatus] = useState(false);
 
   const mockIncidents = [
     {
@@ -138,30 +141,69 @@ export default function Incidents() {
     try {
       setLoading(true);
       setError(null);
-      const data = await getIncidents();
       
-      if (data && data.length > 0) {
-        const mappedIncidents = data.map((incident) => ({
-          id: incident.incident_id,
-          title: incident.title,
-          description: incident.description,
-          timestamp: new Date(incident.detected_at).toLocaleString(),
-          severity: incident.severity,
-          status: incident.status,
-          accounts: incident.metadata?.accounts_involved || 0,
-          reach: incident.metadata?.estimated_reach || '0',
-          platforms: [incident.platform],
-          confidence: Math.round(incident.confidence_score),
-          evidence: incident.metadata?.evidence_count || 0,
-          mediaType: incident.media_type || 'image',
-          mediaUrl: incident.media_url || '',
-          detections: incident.metadata?.detections || [],
-          originalImageUrl: incident.metadata?.original_image_url,
-        }));
-        setIncidents(mappedIncidents);
-      } else {
-        setIncidents(mockIncidents);
+      // 1. Try Supabase if configured
+      if (isSupabaseConfigured) {
+        try {
+          const data = await getIncidents();
+          if (data && data.length > 0) {
+            const mappedIncidents = data.map((incident) => ({
+              id: incident.incident_id,
+              title: incident.title,
+              description: incident.description,
+              timestamp: new Date(incident.detected_at).toLocaleString(),
+              severity: incident.severity,
+              status: incident.status,
+              accounts: incident.metadata?.accounts_involved || 0,
+              reach: incident.metadata?.estimated_reach || '0',
+              platforms: Array.isArray(incident.platform) ? incident.platform : [incident.platform],
+              confidence: Math.round(incident.confidence_score),
+              evidence: incident.metadata?.evidence_count || 0,
+              mediaType: incident.media_type || 'image',
+              mediaUrl: incident.media_url || '',
+              detections: incident.metadata?.detections || [],
+              originalImageUrl: incident.metadata?.original_image_url,
+            }));
+            setIncidents(mappedIncidents);
+            return;
+          }
+        } catch (supabaseErr) {
+          console.warn('Supabase fetch failed, trying backend API:', supabaseErr);
+        }
       }
+
+      // 2. Try Python FastAPI backend
+      try {
+        const backendIncidents = await api.getIncidents();
+        if (backendIncidents && backendIncidents.length > 0) {
+          const mappedFromApi = backendIncidents.map((item) => ({
+            id: item.id,
+            title: item.title,
+            description: item.description,
+            timestamp: new Date(item.timestamp).toLocaleString(),
+            severity: item.confidence >= 0.93 ? 'critical' : item.confidence >= 0.85 ? 'high' : 'medium',
+            status: item.status || 'active',
+            accounts: item.network_size || 1,
+            reach: `${(item.network_size * 1.5).toFixed(1)}K`,
+            platforms: [item.platform || 'Unknown'],
+            confidence: Math.round(item.confidence * 100),
+            evidence: 14,
+            mediaType: 'video' as const,
+            mediaUrl: "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4",
+            detections: [
+              { timestamp: 1.5, type: "face-manipulation" as const, confidence: item.confidence, description: "Facial manipulation artifacts identified" }
+            ],
+            originalImageUrl: undefined
+          }));
+          setIncidents(mappedFromApi);
+          return;
+        }
+      } catch (backendErr) {
+        console.warn('Backend API fetch failed, falling back to mock:', backendErr);
+      }
+
+      // 3. Fallback to rich mock incidents
+      setIncidents(mockIncidents);
     } catch (err: any) {
       console.error('Error loading incidents, falling back to mock:', err);
       setIncidents(mockIncidents);
@@ -170,7 +212,28 @@ export default function Incidents() {
     }
   };
 
-  const { showSuccess, showInfo } = useNotification();
+  const { showSuccess, showInfo, showWarning } = useNotification();
+
+  const handleUpdateStatus = async (incidentId: string, newStatus: string) => {
+    setUpdatingStatus(true);
+    try {
+      await api.updateIncidentStatus(
+        incidentId,
+        newStatus,
+        `Status updated to ${newStatus} from Incident Dossiers console`
+      );
+      showSuccess("Status Updated", `Incident ${incidentId} marked as ${newStatus}`);
+    } catch (err) {
+      showInfo("Session Update", `Incident ${incidentId} set to ${newStatus} locally`);
+    } finally {
+      setUpdatingStatus(false);
+    }
+
+    setIncidents(prev => prev.map(inc => inc.id === incidentId ? { ...inc, status: newStatus } : inc));
+    if (selectedIncident && selectedIncident.id === incidentId) {
+      setSelectedIncident((prev: any) => prev ? { ...prev, status: newStatus } : null);
+    }
+  };
 
   const handleDownloadPDF = (incident: any) => {
     showInfo("PDF Generation", `Generating incident dossier for ${incident.id}...`);
@@ -254,6 +317,16 @@ export default function Incidents() {
       subtitle="Evidence-backed investigative files with multimodal model telemetry and propagation graphs"
       actions={
         <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={loadIncidents}
+            disabled={loading}
+            className="text-xs font-medium border-border hover:bg-secondary/60"
+          >
+            <RotateCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -485,14 +558,33 @@ export default function Incidents() {
                     </DialogTitle>
                   </div>
 
-                  <Button
-                    size="sm"
-                    onClick={() => handleDownloadPDF(selectedIncident)}
-                    className="text-xs bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    Download Dossier (PDF)
-                  </Button>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex items-center bg-secondary/50 rounded-lg p-0.5 border border-border text-xs">
+                      {["active", "investigating", "resolved"].map((st) => (
+                        <button
+                          key={st}
+                          disabled={updatingStatus}
+                          onClick={() => handleUpdateStatus(selectedIncident.id, st)}
+                          className={`px-2 py-1 rounded text-[11px] font-mono capitalize transition-all ${
+                            selectedIncident.status === st
+                              ? "bg-primary text-primary-foreground font-semibold"
+                              : "text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {st === "active" ? "Threat" : st === "investigating" ? "In Review" : "Mitigated"}
+                        </button>
+                      ))}
+                    </div>
+
+                    <Button
+                      size="sm"
+                      onClick={() => handleDownloadPDF(selectedIncident)}
+                      className="text-xs bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      Download Dossier (PDF)
+                    </Button>
+                  </div>
                 </div>
                 <DialogDescription className="text-xs text-muted-foreground mt-1">
                   Detected {selectedIncident.timestamp} across {Array.isArray(selectedIncident.platforms) ? selectedIncident.platforms.join(", ") : selectedIncident.platforms}

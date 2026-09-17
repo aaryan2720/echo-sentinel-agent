@@ -72,6 +72,34 @@ export interface AnalysisResult {
   };
 }
 
+export interface IncidentStats {
+  total: number;
+  recent_24h: number;
+  by_severity: Record<string, number>;
+  by_platform: Record<string, number>;
+  by_status: Record<string, number>;
+  avg_confidence: number;
+  total_estimated_reach: number;
+}
+
+export interface InstagramMonitoringJob {
+  id: string;
+  hashtags: string[];
+  posts_scanned: number;
+  deepfakes_found: number;
+  last_scan: string | null;
+  active: boolean;
+}
+
+export interface InstagramMonitoringStatus {
+  active_jobs: number;
+  total_hashtags: number;
+  posts_scanned: number;
+  deepfakes_detected: number;
+  detection_rate: number;
+  jobs: InstagramMonitoringJob[];
+}
+
 class APIService {
   private baseUrl: string;
 
@@ -110,6 +138,59 @@ class APIService {
   // Get all incidents
   async getIncidents(): Promise<Incident[]> {
     return this.request('/api/incidents');
+  }
+
+  // Get single incident by ID
+  async getIncidentById(incidentId: string): Promise<Incident> {
+    return this.request(`/api/incidents/${incidentId}`);
+  }
+
+  // Create new incident
+  async createIncident(incident: Partial<Incident>): Promise<{ success: boolean; id: string; message: string }> {
+    return this.request('/api/incidents', {
+      method: 'POST',
+      body: JSON.stringify(incident),
+    });
+  }
+
+  // Update incident status
+  async updateIncidentStatus(
+    incidentId: string,
+    status: string,
+    notes?: string
+  ): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/incidents/${incidentId}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status, notes }),
+    });
+  }
+
+  // Get incident statistics
+  async getIncidentStats(): Promise<IncidentStats> {
+    return this.request('/api/incidents/stats');
+  }
+
+  // Start Instagram monitoring
+  async startInstagramMonitoring(
+    hashtags: string[],
+    keywords?: string[]
+  ): Promise<{ success: boolean; job_id: string; hashtags: string[]; message: string }> {
+    return this.request('/api/instagram/monitor/start', {
+      method: 'POST',
+      body: JSON.stringify({ hashtags, keywords }),
+    });
+  }
+
+  // Stop Instagram monitoring
+  async stopInstagramMonitoring(jobId: string): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/instagram/monitor/stop/${jobId}`, {
+      method: 'POST',
+    });
+  }
+
+  // Get Instagram monitoring status
+  async getInstagramMonitoringStatus(): Promise<InstagramMonitoringStatus> {
+    return this.request('/api/instagram/monitor/status');
   }
 
   // Get all alerts
@@ -153,6 +234,14 @@ class APIService {
   // Analyze video from URL
   async analyzeVideoUrl(url: string): Promise<AnalysisResult> {
     return this.request('/api/analyze/video-url', {
+      method: 'POST',
+      body: JSON.stringify({ url }),
+    });
+  }
+
+  // Analyze social media URL with backend extraction
+  async analyzeSocialMedia(url: string): Promise<AnalysisResult> {
+    return this.request('/api/analyze/social-media', {
       method: 'POST',
       body: JSON.stringify({ url }),
     });

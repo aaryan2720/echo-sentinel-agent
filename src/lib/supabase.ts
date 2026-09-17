@@ -3,11 +3,20 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables! Please check your .env file.')
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey)
+
+if (!isSupabaseConfigured) {
+  console.warn('⚠️ Supabase credentials not found in environment (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY). Running in standalone / fallback mode.')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Use real credentials if configured, otherwise fallback placeholder to avoid module loading errors
+const fallbackUrl = 'https://placeholder-project.supabase.co'
+const fallbackAnonKey = 'placeholder-anon-key'
+
+export const supabase = createClient(
+  supabaseUrl || fallbackUrl,
+  supabaseAnonKey || fallbackAnonKey
+)
 
 // =====================================================
 // TypeScript Types for Database Tables
@@ -313,6 +322,11 @@ export function subscribeToTable(
   table: string,
   callback: (payload: any) => void
 ) {
+  if (!isSupabaseConfigured) {
+    console.warn(`Realtime subscription skipped for ${table}: Supabase not configured`);
+    return { unsubscribe: () => {} };
+  }
+
   const subscription = supabase
     .channel(`${table}_changes`)
     .on(
@@ -329,6 +343,13 @@ export function subscribeToTable(
  * Test database connection
  */
 export async function testConnection() {
+  if (!isSupabaseConfigured) {
+    return {
+      success: false,
+      message: 'Supabase credentials not configured in environment (.env). Operating in standalone/mock mode.'
+    }
+  }
+
   try {
     const { data, error } = await supabase
       .from('agents')

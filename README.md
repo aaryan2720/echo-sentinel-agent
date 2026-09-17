@@ -273,7 +273,6 @@ echo-sentinel-agent/
 
 ## 👥 Authors & Maintainers
 
-- **Project Lead**: [@aaryan2720](https://github.com/aaryan2720)
 - **Repository**: [echo-sentinel-agent](https://github.com/aaryan2720/echo-sentinel-agent)
 
 ---
