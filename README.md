@@ -94,44 +94,81 @@ EchoBreaker orchestrates six specialized, communicating autonomous AI agents:
 
 ---
 
-## 🖥️ Platform Interfaces & Modules
+---
+
+## 🖥️ Platform Interfaces & Visual Tour
 
 ### 1. 🛡️ Real-Time SOC Command Center (`/dashboard`)
-- Live executive overview with 4 high-density threat KPI meters (Active Incidents, Flagged Media, Threat Score, Coordinated Clusters).
-- 5-stage automated DAG pipeline status tracker.
-- Real-time Sentinel event streaming feed with instant triage filters.
+> **Live Threat Telemetry & 5-Stage Automated DAG Pipeline Breakdown**
+<p align="center">
+  <img src="./UI_images/02_soc_dashboard.png" alt="EchoBreaker Real-Time SOC Dashboard" width="100%" />
+</p>
 
-### 2. 🚨 Forensic Incidents Dossier (`/incidents`)
-- Real-time incident directory with severity badges (`CRITICAL`, `HIGH`, `MEDIUM`, `LOW`).
-- Forensic metadata breakdown: affected accounts, total reach, confidence scores, detected manipulation flags.
-- Embedded **Full-Screen Media Evidence Viewer** with frame-by-frame scrubbing and heatmaps.
+### 2. 🌐 Landing Page & Architecture Showcase (`/`)
+> **Public Entry & 6-Agent Autonomous Architecture Overview**
+<p align="center">
+  <img src="./UI_images/01_landing_hero.png" alt="EchoBreaker Landing Page" width="100%" />
+</p>
 
-### 3. 🕸️ Interactive GNN Network Topology (`/network`)
-- ReactFlow-powered interactive cluster graph showing bot amplification networks.
-- Sliding node inspector drawer with individual account threat scores, degree centrality, and cluster affiliation.
-- Threat cluster isolation, filter controls, and topology data export.
+### 3. 🚨 Forensic Incidents Dossier (`/incidents`)
+> **Searchable Incident Directory with Frame-Scrubbing Evidence Viewer**
+<p align="center">
+  <img src="./UI_images/03_incidents_forensics.png" alt="Forensic Incident Dossier" width="100%" />
+</p>
 
-### 4. 🤖 AI Multi-Agent Health Center (`/agents`)
-- Real-time operational gauges for all 6 autonomous agents (CPU, Memory, Latency, Accuracy).
-- Live task execution logs terminal with colorized status events.
-- Agent restart, reset, and diagnostic dispatch actions.
+### 4. 🕸️ Interactive GNN Network Topology (`/network`)
+> **ReactFlow-Powered Astroturfing Bot Cluster Visualization with Node Threat Drawer**
+<p align="center">
+  <img src="./UI_images/04_gnn_network_graph.png" alt="GNN Network Topology Explorer" width="100%" />
+</p>
 
-### 5. 📈 Misinformation Narrative Analytics (`/analytics`)
-- Geographic threat concentration mapping.
-- Top trending misinformation narrative rankings with velocity surge indicators.
-- Cross-platform ingestion volume breakdown (X, Instagram, YouTube, Telegram).
+### 5. 🤖 AI Multi-Agent Health Center (`/agents`)
+> **Real-Time Gauges (CPU, Memory, Accuracy, Latency) & Live Streaming Terminal**
+<p align="center">
+  <img src="./UI_images/05_ai_agents_hub.png" alt="AI Agents Health Monitor" width="100%" />
+</p>
 
-### 6. 🔔 Alert Triage Center (`/alerts`)
-- Categorized threat notifications (Deepfake, Coordinated Bot, Phishing, Virality Spike).
-- Mark-all-read bulk action and one-click direct jump to forensic investigation.
+### 6. 📈 Misinformation Narrative Analytics (`/analytics`)
+> **Geographic Concentration Meters & Trending False Narrative Rankings**
+<p align="center">
+  <img src="./UI_images/06_misinformation_analytics.png" alt="Misinformation Analytics" width="100%" />
+</p>
 
-### 7. 🔬 Specialized Forensics & Monitoring Tools
-- **Instagram Social Monitor (`/instagram-monitoring`)**: Live hashtag monitoring daemon with auto-fetch and live terminal output.
-- **Social Media URL & Batch Scanner (`/url-analysis`)**: Instant video/image extraction and VideoMAE classification for single URLs and batch queues.
-- **Visual Agent Diagnostic Testbed (`/visual-agent-test`)**: Frame-by-frame ViT inference inspector.
-- **System Health & Latency Monitor (`/system-status`)**: Live ping diagnostics for API routes, Swagger UI, and model workers.
-- **SOC Settings & Thresholds (`/settings`)**: Configurable confidence thresholds, alerting webhooks, and platform connector credentials.
-- **Global Human Review Queue Modal**: Accessible across all pages for human-in-the-loop validation.
+### 7. 🔔 Threat Alert Triage Center (`/alerts`)
+> **Categorized Threat Notifications with One-Click Forensic Investigation Jump**
+<p align="center">
+  <img src="./UI_images/07_threat_alerts_triage.png" alt="Threat Alert Triage" width="100%" />
+</p>
+
+### 8. 📸 Instagram Social Monitor (`/instagram-monitoring`)
+> **Live Hashtag Ingestion Daemon with Auto-Fetch & Real-Time Terminal Log Stream**
+<p align="center">
+  <img src="./UI_images/08_instagram_monitoring.png" alt="Instagram Monitoring Daemon" width="100%" />
+</p>
+
+### 9. 🔬 Digital Platform URL & VideoMAE Scanner (`/url-analysis`)
+> **Single and Batch Video Extraction with Spatiotemporal Deepfake Inference**
+<p align="center">
+  <img src="./UI_images/09_url_video_analysis.png" alt="VideoMAE URL Analysis" width="100%" />
+</p>
+
+### 10. ⚡ System Health & Latency Monitor (`/system-status`)
+> **Live Endpoint Connectivity & Real-Time Millisecond Latency Diagnostics**
+<p align="center">
+  <img src="./UI_images/10_system_status_health.png" alt="System Health Diagnostics" width="100%" />
+</p>
+
+### 11. ⚙️ SOC Security Settings & Thresholds (`/settings`)
+> **Model Confidence Cutoffs, Platform Webhooks & Signature Verifier**
+<p align="center">
+  <img src="./UI_images/11_soc_settings.png" alt="SOC Security Settings" width="100%" />
+</p>
+
+### 12. 🔐 Security Clearance Authentication Portal (`/auth`)
+> **Restricted Access Clearance Portal with Passkey and MFA Prompts**
+<p align="center">
+  <img src="./UI_images/12_auth_security_clearance.png" alt="SOC Security Clearance Portal" width="100%" />
+</p>
 
 ---
 
