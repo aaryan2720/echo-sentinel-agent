@@ -371,7 +371,7 @@ export default function Landing() {
           <div className="flex items-center gap-2">
             <Logo />
             <span className="font-bold text-foreground">EchoBreaker Sentinel</span>
-            <span>— Mumbai Hacks 2025 Autonomous Defense Initiative</span>
+            <span>— Autonomous Digital Misinformation Defense Initiative</span>
           </div>
 
           <div className="flex items-center gap-6">

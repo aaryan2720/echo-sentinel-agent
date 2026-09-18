@@ -1,6 +1,6 @@
 -- =====================================================
 -- EchoBreaker Database Schema
--- Mumbai Hacks 2025
+-- EchoBreaker Sentinel (AI-03)
 -- Created: October 19, 2025
 -- =====================================================
 

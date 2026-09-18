@@ -18,7 +18,7 @@ export const DemoBanner = () => {
             <p className="text-sm font-mono text-foreground">
               <span className="font-bold text-primary">🎯 DEMO MODE</span> — 
               Full access to all features • No login required • 
-              <span className="text-accent ml-1">Mumbai Hacks 2025</span>
+              <span className="text-accent ml-1">EchoBreaker Sentinel Platform</span>
             </p>
           </div>
           <Button

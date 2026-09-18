@@ -189,7 +189,7 @@ export const generateIncidentPDF = (incident: IncidentData) => {
   doc.setFontSize(8);
   doc.setTextColor(100, 100, 100);
   doc.text('EchoBreaker - Autonomous Deepfake Detection System', pageWidth / 2, yPos, { align: 'center' });
-  doc.text('Mumbai Hacks 2025 | Confidential Report', pageWidth / 2, yPos + 4, { align: 'center' });
+  doc.text('EchoBreaker Sentinel SOC | Confidential Report', pageWidth / 2, yPos + 4, { align: 'center' });
   
   // Save the PDF
   doc.save(`incident-report-${incident.id}.pdf`);

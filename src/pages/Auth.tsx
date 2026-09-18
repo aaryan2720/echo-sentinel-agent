@@ -153,7 +153,7 @@ export default function Auth() {
 
       {/* Footer */}
       <footer className="relative z-10 py-6 text-center text-xs text-muted-foreground">
-        <p>Secured with end-to-end cryptographic hashing • Mumbai Hacks 2025</p>
+        <p>Secured with end-to-end cryptographic hashing • AI-03 Sentinel SOC</p>
       </footer>
     </div>
   );
